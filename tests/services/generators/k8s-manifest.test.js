@@ -1,5 +1,3 @@
-
-
 const k8sManifestGenerator = require('../../../src/services/generators/k8s-manifest');
 
 let mockSpawn = {};
