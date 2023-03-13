@@ -3,7 +3,7 @@ name: Backend Build and Deploy
 on:
   push:
     branches:
-      - main
+      - feature/push-commit-check
 
 env:
   REGISTRY: docker.io
