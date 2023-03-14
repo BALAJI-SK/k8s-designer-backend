@@ -7,7 +7,7 @@ const getDirectoryNamesInsideFolder = require("../utility/getDirectoryNamesInsid
 const pushDockerImage = async (
   projectId,
   username,
-  token,
+  password,
   email,
   serverAddress
 ) => {
@@ -15,44 +15,37 @@ const pushDockerImage = async (
 
   const boilerplateNames = await getDirectoryNamesInsideFolder(projectDir);
 
-  try {
-    await Promise.all(
-      boilerplateNames.map(async (boilerplateName) => {
+  await Promise.all(
+    boilerplateNames.map(async (boilerplateName) => {
+      await new Promise((resolve, reject) => {
         const image = docker.getImage(`${username}/${boilerplateName}`);
 
-        const stream = await image.push({
-          authconfig: {
-            username: username,
-            password: token,
-            email: email,
-            serveraddress: serverAddress,
-          },
-        });
+        image
+          .push({
+            authconfig: {
+              username,
+              password,
+              email,
+              serveraddress: serverAddress,
+            },
+          })
+          .then((stream) => {
+            stream.on("data", (data) => {
+              console.log(data.toString());
+            });
 
-        let data = "";
+            stream.on("end", () => {
+              resolve();
+            });
 
-        stream.on("data", (chunk) => {
-          data += chunk;
-
-          console.log("incoming", data);
-        });
-
-        stream.on("end", () => {
-          console.log("ended", data);
-        });
-      })
-    );
-  } catch (err) {
-    console.error("Error pushing docker image", err);
-  }
+            stream.on("error", (err) => {
+              reject(err);
+            });
+          })
+          .catch(reject);
+      });
+    })
+  );
 };
-
-pushDockerImage(
-  1,
-  "preetindersingh",
-  "dckr_pat_ZBLSfx2cNVg2ZUP6TFKULYRiV1Y",
-  "preetindersingh072@gmail.com",
-  "https://registry.hub.docker.com/"
-);
 
 module.exports = pushDockerImage;
