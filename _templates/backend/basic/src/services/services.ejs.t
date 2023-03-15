@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/src/services/healthcheck.services.js
+to: <%= outputPath %>/<%= name %>/src/services/healthcheck.services.js
 force: true
 ---
 <% if(databases.length === 0){ %>

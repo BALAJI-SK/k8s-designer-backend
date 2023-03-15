@@ -1,5 +1,5 @@
 ---
-to:  "<%= (databases.length > 0 ? (outputPath + '/' + appName + '/src/models/index.js') : null) %>"
+to:  "<%= (databases.length > 0 ? (outputPath + '/' + name + '/src/models/index.js') : null) %>"
 force: true
 ---
 'use strict';

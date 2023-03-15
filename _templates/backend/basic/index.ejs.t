@@ -1,12 +1,12 @@
 ---
-to: <%= outputPath %>/<%= appName %>/index.js
+to: <%= outputPath %>/<%= name %>/index.js
 force: true
 ---
 const express = require('express');
 const routes =require('./src/routes/healthcheck.routes.js');
 
 const app = express();
-const PORT = process.env.PORT || <%= port %>;
+const PORT = process.env.PORT || <%= containerPort %>;
 
 <% if(frontends.length >0) {-%>
 const cors = require('cors');

@@ -14,6 +14,12 @@ const runHygen = (projectId, generator, action, config) => {
       '--config',
       JSON.stringify(config),
     ]);
+    // hygenProcess.stdout.on('data', (data) => {
+    //   console.log(data.toString());
+    // });
+    // hygenProcess.stderr.on('data', (data) => {
+    //   console.log(data.toString());
+    // });
     hygenProcess.on('close', (code) => {
       if (code === 0) {
         resolve(code);
@@ -24,38 +30,45 @@ const runHygen = (projectId, generator, action, config) => {
   });
 };
 
-
-const generateBoilerplate = (projectId, microservice, config) => {
-  const response = [];
-  switch (microservice) {
-  case 'frontend':
+const generateBoilerplateObj = {
+  frontend: (projectId, config) => {
+    const response = [];
     config.frontend.forEach((frontend) => {
-      response.push(runHygen(projectId, microservice, 'single', frontend));
+      response.push(runHygen(projectId, 'frontend', 'basic', frontend));
     });
-    break;
-  case 'backend':
+    return Promise.all(response);
+  },
+  backend: (projectId, config) => {
+    const response = [];
     config.backend.forEach((backend) => {
       backend.databases.forEach((db) => {
         const database = {
-          appName: backend.appName,
+          name: backend.name,
           database: db,
         };
-        response.push(runHygen(projectId, microservice, 'many', database));
+        response.push(runHygen(projectId, 'backend', 'module', database));
       });
-      response.push(runHygen(projectId, microservice, 'single', backend));
+      response.push(runHygen(projectId, 'backend', 'basic', backend));
     });
-    break;
-  case 'database':
+    return Promise.all(response);
+  },
+  database: (projectId, config) => {
+    const response = [];
     config.database.forEach((db) => {
       response.push(
-        runHygen(projectId, microservice, 'many', { database: db })
+        runHygen(projectId, 'database', 'module', { database: db })
       );
     });
-    break;
-  default:
-    return Promise.reject('Invalid microservice');
+    return Promise.all(response);
+  },
+};
+
+const generateBoilerplate = async (projectId, microservice, config) => {
+  if (!generateBoilerplateObj[microservice]) {
+    throw new Error('Invalid microservice');
   }
-  return Promise.all(response);
+  return await generateBoilerplateObj[microservice](projectId, config);
+    
 };
 
 module.exports = { generateBoilerplate, runHygen };

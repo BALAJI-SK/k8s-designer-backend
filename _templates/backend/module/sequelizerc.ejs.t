@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/.sequelize-<%= database.dbName %>
+to: <%= outputPath %>/<%= name %>/.sequelize-<%= database.dbName %>
 force: true
 ---
 const path = require('path');

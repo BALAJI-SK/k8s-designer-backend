@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/src/exceptions/healthcheck.exceptions.js
+to: <%= outputPath %>/<%= name %>/src/exceptions/healthcheck.exceptions.js
 force: true
 ---
 class httpError extends Error {

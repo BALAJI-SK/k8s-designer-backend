@@ -1,9 +1,9 @@
 ---
-to: <%= outputPath %>/<%= appName %>/package.json
+to: <%= outputPath %>/<%= name %>/package.json
 force: true
 ---
 {
-  "name": "<%= appName %>",
+  "name": "<%= name %>",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

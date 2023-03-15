@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/src/index.js
+to: <%= outputPath %>/<%= name %>/src/index.js
 force: true
 ---
 import React from 'react';

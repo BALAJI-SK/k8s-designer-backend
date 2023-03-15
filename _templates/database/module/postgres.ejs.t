@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= databaseName %>/Dockerfile
+to: <%= outputPath %>/<%= dbName %>/Dockerfile
 force: true
 ---
 
@@ -8,7 +8,7 @@ FROM postgres:<%= dbVersion %>
 ENV POSTGRES_USER <%= dbUser %>
 ENV POSTGRES_PASSWORD <%= dbPassword %>
 
-EXPOSE <%= dbPort %>
+EXPOSE <%= dbContainerPort %>
 
 VOLUME /var/lib/postgresql/data
 

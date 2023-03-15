@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/src/components/Footer/index.jsx
+to: <%= outputPath %>/<%= name %>/src/components/Footer/index.jsx
 force: true
 ---
 import React from 'react'

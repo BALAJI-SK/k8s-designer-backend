@@ -1,12 +1,12 @@
 ---
-to: <%= outputPath %>/<%= appName %>/public/index.html
+to: <%= outputPath %>/<%= name %>/public/index.html
 force: true
 ---
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title><%= appName %></title>
+    <title><%= name %></title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

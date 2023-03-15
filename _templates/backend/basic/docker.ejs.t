@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/Dockerfile
+to: <%= outputPath %>/<%= name %>/Dockerfile
 force: true
 ---
 FROM alpine:latest

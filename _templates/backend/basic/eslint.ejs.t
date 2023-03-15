@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/.eslintrc.json
+to: <%= outputPath %>/<%= name %>/.eslintrc.json
 force: true
 ---
 {

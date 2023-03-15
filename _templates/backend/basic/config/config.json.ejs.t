@@ -1,5 +1,5 @@
 ---
-to:  "<%= (databases.length > 0 ? (outputPath + '/' + appName + '/database/config/config.js') : null) %>"
+to:  "<%= (databases.length > 0 ? (outputPath + '/' + name + '/database/config/config.js') : null) %>"
 force: true
 ---
 <% if(databases.length > 0) {%>

@@ -1,9 +1,9 @@
 ---
-to: <%= outputPath %>/<%= appName %>/package.json
+to: <%= outputPath %>/<%= name %>/package.json
 force: true
 ---
 {
-  "name": "<%= appName %>",
+  "name": "<%= name %>",
   "version": "1.0.0",
   "description": "Standalone Backend Boilerplate using NodeJS and Express",
   "main": "index.js",

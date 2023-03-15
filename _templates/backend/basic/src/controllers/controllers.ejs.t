@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= appName %>/src/controllers/healthcheck.controllers.js
+to: <%= outputPath %>/<%= name %>/src/controllers/healthcheck.controllers.js
 force: true
 ---
 const services = require('../services/healthcheck.services.js');

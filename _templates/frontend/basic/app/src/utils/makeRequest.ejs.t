@@ -1,5 +1,5 @@
 ---
-to:  "<%= (backends.length > 0 ? (outputPath + '/' + appName + '/src/utils/makeRequest/index.js') : null) %>"
+to:  "<%= (backends.length > 0 ? (outputPath + '/' + name + '/src/utils/makeRequest/index.js') : null) %>"
 force: true
 ---
 import axios from 'axios';
