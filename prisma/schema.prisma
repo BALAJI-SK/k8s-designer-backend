@@ -38,6 +38,7 @@ model projectServiceConfig {
   frontendService frontendService[]
   backendService  backendService[]
   envVariables    envVariables[]
+  imageRepository imageRepository[]
 
   @@map("project_service_configs")
 }
@@ -72,6 +73,16 @@ model envVariables {
   serviceId            String                @map("service_id") @db.Uuid
 
   @@map("env_variables")
+}
+
+model imageRepository{
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  imageRepositoryUrl  String                @map("image_repository_url")
+  imageRepositoryToken String               @map("image_repository_token")
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  serviceId            String                @map("service_id") @db.Uuid
+
+  @@map("image_repositories")
 }
 
 enum serviceType {
