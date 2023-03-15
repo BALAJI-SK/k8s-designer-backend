@@ -2,6 +2,7 @@ const projectServiceConfigRepository = require('../../src/repositories/projectSe
 const envVariablesRepository = require('../../src/repositories/envVariables.repositories');
 const frontendServiceRepository = require('../../src/repositories/frontendService.repositories');
 const backendServiceRepository = require('../../src/repositories/backendService.repositories');
+const imageServiceRepository = require('../../src/repositories/imageService.repositories');
 
 jest.mock('../../src/repositories/projectServiceConfig.repositories', () => ({
   create: jest.fn(),
@@ -16,6 +17,10 @@ jest.mock('../../src/repositories/frontendService.repositories', () => ({
 }));
 
 jest.mock('../../src/repositories/backendService.repositories', () => ({
+  create: jest.fn(),
+}));
+
+jest.mock('../../src/repositories/imageRepoService.repositories', () => ({
   create: jest.fn(),
 }));
 
@@ -45,6 +50,7 @@ describe('Repository Service Object', () => {
       projectServiceConfigRepository.create.mockResolvedValue({ id: 1 });
       frontendServiceRepository.create.mockResolvedValue({ id: 1 });
       envVariablesRepository.create.mockResolvedValue({ id: 1 });
+      imageServiceRepository.create.mockResolvedValue({ id: 1 });
 
       const serviceId = await repositoryServiceObj.FrontEnd(service, projectId);
 
@@ -62,6 +68,11 @@ describe('Repository Service Object', () => {
       expect(envVariablesRepository.create).toHaveBeenCalledWith({
         field: 'DATABASE_URL',
         value: 'postgres://localhost:5432/mydb',
+        serviceId: 1,
+      });
+      expect(imageServiceRepository.create).toHaveBeenCalledWith({
+        serverAddress: 'http://github.com',
+        token: '944928jndmakqa',
         serviceId: 1,
       });
     });
@@ -86,6 +97,8 @@ describe('Repository Service Object', () => {
       projectServiceConfigRepository.create.mockResolvedValue({ id: 1 });
       backendServiceRepository.create.mockResolvedValue({ id: 1 });
       envVariablesRepository.create.mockResolvedValue({ id: 1 });
+      imageServiceRepository.create.mockResolvedValue({ id: 1 });
+
 
       const serviceId = await repositoryServiceObj.BackEnd(service, projectId);
 
@@ -103,6 +116,11 @@ describe('Repository Service Object', () => {
       expect(envVariablesRepository.create).toHaveBeenCalledWith({
         field: 'DATABASE_URL',
         value: 'postgres://localhost:5432/mydb',
+        serviceId: 1,
+      });
+      expect(imageServiceRepository.create).toHaveBeenCalledWith({
+        serverAddress: 'http://github.com',
+        token: '944928jndmakqa',
         serviceId: 1,
       });
     });
