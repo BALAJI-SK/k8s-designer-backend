@@ -4,6 +4,8 @@ const frontendServiceRepository = require('../../src/repositories/frontendServic
 const envVariablesRepository = require('../../src/repositories/envVariables.repositories.js');
 const projectServiceConfigRepository = require('../../src/repositories/projectServiceConfig.repositories.js');
 const projectRepository = require('../../src/repositories/project.repositories');
+const imageServiceRepository = require('../../src/repositories/imageService.repositories');
+
 
 describe('microservices  service  testing', () => {
   it('should populate microservice table ', async () => {
@@ -31,6 +33,12 @@ describe('microservices  service  testing', () => {
       'serviceId':1,
       'projectId':3
     });
+    jest.spyOn(imageServiceRepository,'create').mockResolvedValueOnce({
+      'id':5,
+      'serverAddress': 'http://dockerhub.com',
+      'token': '2393040402919919939302',
+      'serviceId':1,
+    });
 
 
     const mockreq = {body:{'services':[
@@ -45,6 +53,10 @@ describe('microservices  service  testing', () => {
         'customEnv':{
           'field': 'port',
           'value':'2345'
+        },
+        'imageRepository':{
+          'serverAddress':'http://dockerhub.com',
+          'token':'2393040402919919939302'
         }
       }
     ]}};
@@ -66,7 +78,12 @@ describe('microservices  service  testing', () => {
         },
         'customEnv':{
           'field': 'port',
+          
           'value':'2345'
+        },
+        'imageRepository':{
+          'serverAddress':'http://dockerhub.com',
+          'token':'2393040402919919939302'
         }
       }
     ]});

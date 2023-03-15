@@ -20,7 +20,7 @@ jest.mock('../../src/repositories/backendService.repositories', () => ({
   create: jest.fn(),
 }));
 
-jest.mock('../../src/repositories/imageRepoService.repositories', () => ({
+jest.mock('../../src/repositories/imageService.repositories', () => ({
   create: jest.fn(),
 }));
 
@@ -44,6 +44,10 @@ describe('Repository Service Object', () => {
           field: 'DATABASE_URL',
           value: 'postgres://localhost:5432/mydb',
         },
+        imageRepository:{
+          serverAddress:'http://dockerhub.com',
+          token:'2393040402919919939302'
+        }
       };
       const projectId = 1;
 
@@ -71,8 +75,8 @@ describe('Repository Service Object', () => {
         serviceId: 1,
       });
       expect(imageServiceRepository.create).toHaveBeenCalledWith({
-        serverAddress: 'http://github.com',
-        token: '944928jndmakqa',
+        imageRepositoryUrl: 'http://dockerhub.com',
+        imageRepositoryToken: '2393040402919919939302',
         serviceId: 1,
       });
     });
@@ -91,6 +95,10 @@ describe('Repository Service Object', () => {
           field: 'DATABASE_URL',
           value: 'postgres://localhost:5432/mydb',
         },
+        imageRepository:{
+          serverAddress:'http://dockerhub.com',
+          token:'2393040402919919939302'
+        }
       };
       const projectId = 1;
 
@@ -119,8 +127,8 @@ describe('Repository Service Object', () => {
         serviceId: 1,
       });
       expect(imageServiceRepository.create).toHaveBeenCalledWith({
-        serverAddress: 'http://github.com',
-        token: '944928jndmakqa',
+        imageRepositoryUrl: 'http://dockerhub.com',
+        imageRepositoryToken: '2393040402919919939302',
         serviceId: 1,
       });
     });
