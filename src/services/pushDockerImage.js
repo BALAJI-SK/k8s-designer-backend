@@ -1,8 +1,8 @@
-var Docker = require("dockerode");
-var docker = new Docker({ socketPath: "/var/run/docker.sock" });
-const path = require("path");
-const { OUTPUT_PATH } = require("../constants/app.constants");
-const getDirectoryNamesInsideFolder = require("../utility/getDirectoryNamesInsideFolder");
+var Docker = require('dockerode');
+var docker = new Docker({ socketPath: '/var/run/docker.sock' });
+const path = require('path');
+const { OUTPUT_PATH } = require('../constants/app.constants');
+const getDirectoryNamesInsideFolder = require('../utility/getDirectoryNamesInsideFolder');
 
 const pushDockerImage = async (
   projectId,
@@ -30,15 +30,15 @@ const pushDockerImage = async (
             },
           })
           .then((stream) => {
-            stream.on("data", (data) => {
+            stream.on('data', (data) => {
               console.log(data.toString());
             });
 
-            stream.on("end", () => {
+            stream.on('end', () => {
               resolve();
             });
 
-            stream.on("error", (err) => {
+            stream.on('error', (err) => {
               reject(err);
             });
           })
