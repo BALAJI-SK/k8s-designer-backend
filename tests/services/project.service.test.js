@@ -82,10 +82,6 @@ describe('microservices service testing', () => {
         'customEnv':{
           'field': 'port',
           'value':'2345'
-        },
-        'imageRepository':{
-          'serverAddress':'http://dockerhub.com',
-          'token':'2393040402919919939302'
         }
       },
       {
@@ -123,5 +119,4 @@ describe('microservices service testing', () => {
     expect(zipFolder).toHaveBeenCalledWith(folderPath, zipPath);
   });
 });
-
 
