@@ -6,6 +6,11 @@ on:
       - opened
     branches:
       - main
+  push:
+    branches:
+      - feat/**
+      - feature/**
+      - dev/**
 
 jobs:
   pull-request-check:
