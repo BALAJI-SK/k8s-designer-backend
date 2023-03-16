@@ -6,12 +6,12 @@ const userSchema = Joi.object({
 
 const createBodySchema = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email({ tlds: { allow: false } }).required(),
   password: Joi.string().min(3).max(12).required()
 });
 
 const loginBodySchema = Joi.object({
-  email: Joi.string().required(),
+  email: Joi.string().email({ tlds: { allow: false } }).required(),
   password: Joi.string().min(3).max(12).required(),
 });
 

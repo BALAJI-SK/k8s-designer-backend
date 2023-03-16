@@ -4,9 +4,10 @@ const passwordUtil = require('../../src/utility/password.util');
 describe('Password Util', () => { 
   describe('Hash Password', () => {
     it('should return a hashed password', async () => {
+      jest.spyOn(bcrypt, 'genSalt').mockResolvedValue('salt');
       jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword');
-      const result = await passwordUtil.hashPassword('password', 10);
-      expect(result).toEqual('hashedpassword');
+      const result = await passwordUtil.hashPassword('password');
+      expect(result).toEqual({ hashpassword: 'hashedpassword', salt: 'salt' });
     });
   });
 

@@ -17,6 +17,7 @@ model user {
   fullName String   @map("full_name")
   email    String   @unique @map("email")
   password String   @map("password")
+  salt     String   @map("salt")
   Project  project?
 
   @@map("users")

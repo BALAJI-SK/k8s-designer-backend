@@ -6,7 +6,8 @@ const createUser = async (data)=>{
     const newUser = await prisma.user.create({ data });
     return newUser;
   }catch(error){
-    throw new httpError('Unable to create new User', 400);
+    console.log(error);
+    throw new httpError(`User with email ${data.email} already exists`, 400);
   }
 };
 

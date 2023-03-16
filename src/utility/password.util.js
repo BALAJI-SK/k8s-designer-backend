@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 
-const { SALT_ROUND } = require('../constants/password.contant');
-
 const hashPassword = async (password) => {
-  return bcrypt.hash(password, SALT_ROUND);
+  const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUND));
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return { hashpassword: hashedPassword, salt };
 };
 
 const comparePassword = async (password, hashPassword) => {

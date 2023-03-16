@@ -15,13 +15,14 @@ const getCustomerData = customerId => {
 };
 
 const createUser = async (name, email, password) => {
-  const hashedPassword = await passwordUtil.hashPassword(password);
-  const newUser = await userRepositoryService.createUser({ fullName: name, email, password: hashedPassword });
+  const { hashpassword, salt } = await passwordUtil.hashPassword(password);
+  const newUser = await userRepositoryService.createUser({ fullName: name, email, password: hashpassword, salt });
   if(!newUser) {
+    console.log(newUser);
     throw new httpError('Unable to create user', 400);
   }
   return {
-    message: 'USER CREATED SUCCEFULLY',
+    message: 'User Registered Succesfully',
   };
 };
 
