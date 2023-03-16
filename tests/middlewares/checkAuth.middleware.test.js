@@ -5,7 +5,7 @@ const checkAuth = require("../../src/middlewares/checkAuth.middleware");
 
 describe("checkAuth middleware", () => {
   let req, res, next;
-
+  // console.log("process.env.JWT_SECRET: " + process.env.JWT_SECRET);
   beforeEach(() => {
     req = {
       headers: {
@@ -29,7 +29,10 @@ describe("checkAuth middleware", () => {
 
   it("should set req.userData if valid token is provided", () => {
     checkAuth(req, res, next);
+    // console.log(req.headers.authorization+ " " + "req.headers.authorization");
     expect(req.userData.userId).toBe("123");
+    // console.log(req.userData.userId+ " " + "req.userId")
+    expect(res.status).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
 
