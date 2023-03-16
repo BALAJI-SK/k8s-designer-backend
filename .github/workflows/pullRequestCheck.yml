@@ -1,4 +1,4 @@
-name: Pull Request Check & Push request check on their own branch
+name: Pull Request Check
 
 on:
   pull_request:
@@ -12,6 +12,30 @@ on:
       - feature/**
       - dev/**
 
+jobs:
+  pull-request-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+    - name: Install dependencies
+      run: |
+        npm install
+    - name: Lint code
+      run: |
+        npm run linting
+    - name: Run tests
+      run: |
+        npm run test
 jobs:
   pull-request-check:
     runs-on: ubuntu-latest

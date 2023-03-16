@@ -22,45 +22,54 @@ model user {
 }
 
 model project {
-  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user                 user                  @relation(fields: [userId], references: [id])
-  userId               String                @unique @map("user_id") @db.Uuid
-  ProjectServiceConfig projectServiceConfig?
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user                 user                   @relation(fields: [userId], references: [id])
+  userId               String                 @unique @map("user_id") @db.Uuid
+  projectServiceConfig projectServiceConfig[]
 
   @@map("projects")
 }
 
 model projectServiceConfig {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  serviceType serviceType @default(FrontEnd) @map("service_type")
-
-  service   frontendService @relation(fields: [serviceId], references: [id])
-  serviceId String          @map("service_id") @db.Uuid
-
-  project   project? @relation(fields: [projectId], references: [id])
-  projectId String   @unique @map("project_id") @db.Uuid
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  project         project?          @relation(fields: [projectId], references: [id])
+  projectId       String            @map("project_id") @db.Uuid
+  serviceType     String            @map("service_type")
+  frontendService frontendService[]
+  backendService  backendService[]
+  envVariables    envVariables[]
 
   @@map("project_service_configs")
 }
 
 model frontendService {
-  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  reactVersion         String                 @map("react_version")
-  port                 String                 @map("port")
-  numberOfReplicas     Int                    @map("number_of_replicas")
-  name                 String                 @map("name")
-  envVariables         envVariables[]
-  projectServiceConfig projectServiceConfig[]
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  port                 String                @map("port")
+  numberOfReplicas     Int                   @map("number_of_replicas")
+  name                 String                @map("name")
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  serviceId            String                @map("service_id") @db.Uuid @default(dbgenerated("gen_random_uuid()"))
 
   @@map("frontend_services")
 }
 
+model backendService {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  port                 String                @map("port")
+  numberOfReplicas     Int                   @map("number_of_replicas")
+  name                 String                @map("name")
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  serviceId            String                @map("service_id") @db.Uuid  @default(dbgenerated("gen_random_uuid()"))
+
+  @@map("backend_services")
+}
+
 model envVariables {
-  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  field              String          @map("field")
-  value              String          @map("value")
-  frontendService    frontendService @relation(fields: [frontendServicesId], references: [id])
-  frontendServicesId String          @map("frontend_services_id") @db.Uuid
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  field                String                @map("field")
+  value                String                @map("value")
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  serviceId            String                @map("service_id") @db.Uuid
 
   @@map("env_variables")
 }

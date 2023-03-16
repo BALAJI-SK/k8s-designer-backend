@@ -5,10 +5,10 @@ services:
     image: {{image}}
     ports: 
       - "{{port}}:{{internalPort}}"
-    environment: 
-      {{#environment}}
+    envVariables: 
+      {{#envVariables}}
       {{name}}: "{{{value}}}"
-      {{/environment}}
+      {{/envVariables}}
     deploy: 
       replicas: {{replicas}}
       

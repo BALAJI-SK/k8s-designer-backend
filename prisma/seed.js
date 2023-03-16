@@ -5,7 +5,7 @@ async function main() {
         where: { email: 'alice@prisma.io' },
         update: {},
         create: {
-            full_name: 'Alice',
+            fullName: 'Alice',
             email: 'alice@prisma.io',
         },
     });
@@ -14,7 +14,7 @@ async function main() {
         where: { email: 'bob@prisma.io' },
         update: {},
         create: {
-            full_name: 'bob',
+            fullName: 'bob',
             email: 'bob@prisma.io',
         },
     });
