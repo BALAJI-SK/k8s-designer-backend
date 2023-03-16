@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const http2constants = require("http2").constants;
+require('dotenv').config();
 const checkAuth = require("../../src/middlewares/checkAuth.middleware");
 
 describe("checkAuth middleware", () => {
