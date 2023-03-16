@@ -11,7 +11,7 @@ describe("checkAuth middleware", () => {
       headers: {
         authorization:
           "Bearer " +
-          jwt.sign({ userId: "123" }, process.env.JWT_SECRET, {
+          jwt.sign({ userId: "123" }, 'mysecret', {
             expiresIn: "1h",
           }),
       },
