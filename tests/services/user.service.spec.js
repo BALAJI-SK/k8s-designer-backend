@@ -9,7 +9,7 @@ describe('User Service', () => {
       jest.spyOn(passwordUtil, 'hashPassword').mockResolvedValue('hashedpassword');
       jest.spyOn(userRepositoryService, 'createUser').mockResolvedValue({ id: 1, name: 'name', email: 'email', password: 'hashedpassword' });
       const result = await userService.createUser('name', 'email', 'password');
-      expect(result).toEqual({ message: 'USER CREATED SUCCEFULLY' });
+      expect(result).toEqual({ message: 'User Registered Succesfully' });
     });
     it('should throw custom error', async () => {
       jest.spyOn(passwordUtil, 'hashPassword').mockResolvedValue('hashedpassword');
