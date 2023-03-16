@@ -1,17 +1,17 @@
-const Docker = require("dockerode");
-const docker = new Docker({ socketPath: "/var/run/docker.sock" });
-const pushDockerImage = require("../../src/services/pushDockerImage");
-const getDirectoryNamesInsideFolder = require("../../src/utility/getDirectoryNamesInsideFolder");
+const Docker = require('dockerode');
+const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+const pushDockerImage = require('../../src/services/pushDockerImage');
+const getDirectoryNamesInsideFolder = require('../../src/utility/getDirectoryNamesInsideFolder');
 
-jest.mock("dockerode", () => {
+jest.mock('dockerode', () => {
   const mockStream = {
     on: jest.fn().mockImplementation(function (event, callback) {
-      if (event === "data") {
-        callback("data");
-      } else if (event === "end") {
+      if (event === 'data') {
+        callback('data');
+      } else if (event === 'end') {
         callback();
-      } else if (event === "error") {
-        callback(new Error("Error while pushing image"));
+      } else if (event === 'error') {
+        callback(new Error('Error while pushing image'));
       }
     }),
   };
@@ -25,28 +25,28 @@ jest.mock("dockerode", () => {
   return jest.fn(() => mockDocker);
 });
 
-jest.mock("../../src/utility/getDirectoryNamesInsideFolder", () => {
+jest.mock('../../src/utility/getDirectoryNamesInsideFolder', () => {
   return jest.fn();
 });
 
 const projectId = 1;
-const username = "username";
-const password = "password";
-const email = "email";
-const serverAddress = "serverAddress";
+const username = 'username';
+const password = 'password';
+const email = 'email';
+const serverAddress = 'serverAddress';
 
-const mockBoilerplateNames = ["frontend", "backend"];
+const mockBoilerplateNames = ['frontend', 'backend'];
 
-describe("pushDockerImage", () => {
+describe('pushDockerImage', () => {
   beforeEach(() => {
     getDirectoryNamesInsideFolder.mockResolvedValue(mockBoilerplateNames);
   });
 
-  it("should push a docker image successfully", async () => {
+  it('should push a docker image successfully', async () => {
     await pushDockerImage(projectId, username, password, email, serverAddress);
 
-    expect(docker.getImage).toHaveBeenCalledWith("username/frontend");
-    expect(docker.getImage).toHaveBeenCalledWith("username/backend");
+    expect(docker.getImage).toHaveBeenCalledWith('username/frontend');
+    expect(docker.getImage).toHaveBeenCalledWith('username/backend');
 
     expect(docker.getImage().push).toHaveBeenCalledWith({
       authconfig: {
@@ -58,15 +58,15 @@ describe("pushDockerImage", () => {
     });
   });
 
-  it("should throw an error if there is an error while pushing the image", async () => {
+  it('should throw an error if there is an error while pushing the image', async () => {
     docker.getImage.mockReturnValueOnce({
       push: jest.fn().mockImplementation(() => {
-        throw new Error("Error while pushing image");
+        throw new Error('Error while pushing image');
       }),
     });
 
     await expect(
       pushDockerImage(projectId, username, password, email, serverAddress)
-    ).rejects.toThrow("Error while pushing image");
+    ).rejects.toThrow('Error while pushing image');
   });
 });
