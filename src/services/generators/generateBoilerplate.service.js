@@ -27,6 +27,7 @@ const runHygen = (projectId, generator, action, config) => {
         reject(code);
       }
     });
+  });
 };
 
 const generateBoilerplateObj = {
