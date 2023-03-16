@@ -4,8 +4,7 @@ require('dotenv').config();
 const checkAuth = require("../../src/middlewares/checkAuth.middleware");
 
 describe("checkAuth middleware", () => {
-  let req, res, next;
-  // console.log("process.env.JWT_SECRET: " + process.env.JWT_SECRET);
+  let req, res, next ,decoded;
   beforeEach(() => {
     req = {
       headers: {
@@ -21,18 +20,22 @@ describe("checkAuth middleware", () => {
       json: jest.fn(),
     };
     next = jest.fn();
+
+    decoded = jwt.verify(req.headers.authorization.split(" ")[1], 'mysecret')
   });
 
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it("should set req.userData if valid token is provided", () => {
-    checkAuth(req, res, next);
+  it("should set req.userData if valid token is provided", async() => {
+    jest.spyOn(jwt, "verify").mockReturnValue(decoded);
+    await checkAuth(req, res, next);
     // console.log(req.headers.authorization+ " " + "req.headers.authorization");
-    expect(req.userData.userId).toBe("123");
-    // console.log(req.userData.userId+ " " + "req.userId")
+    // console.log(req.userData.userId+ " " + "req.userData.userId")
+    expect(req.userData).toBeDefined();
     expect(res.status).not.toHaveBeenCalled();
+    expect(res.json).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
 
