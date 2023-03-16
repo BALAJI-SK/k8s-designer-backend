@@ -6,7 +6,7 @@ const generateProject = async (data) =>{
   const {services} = data;
   const projectResult = await projectRepository.create(
       
-    {userId:'6d5ef481-7340-44c0-991c-df95714d76ac'}
+    {userId:'46eb287c-4527-440e-b589-4ae91282ec81'}
         
   );
   const projectId =  projectResult.id;
