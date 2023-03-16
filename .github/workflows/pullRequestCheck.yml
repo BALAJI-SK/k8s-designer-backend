@@ -1,4 +1,4 @@
-name: Pull Request Check
+name: Pull Request Check & Push request check on their own branch
 
 on:
   pull_request:
@@ -6,6 +6,11 @@ on:
       - opened
     branches:
       - main
+  push:
+    branches:
+      - feat/**
+      - feature/**
+      - dev/**
 
 jobs:
   pull-request-check:
