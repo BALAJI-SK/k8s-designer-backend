@@ -18,7 +18,7 @@ const createUser = async (name, email, password) => {
   const { hashpassword, salt } = await passwordUtil.hashPassword(password);
   const newUser = await userRepositoryService.createUser({ fullName: name, email, password: hashpassword, salt });
   if(!newUser) {
-    console.log(newUser);
+    // console.log(newUser);
     throw new httpError('Unable to create user', 400);
   }
   return {
