@@ -40,6 +40,7 @@ describe('Repository Service Object', () => {
           name: 'frontend',
           port: 3000,
         },
+        connected_service: [],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
@@ -80,6 +81,7 @@ describe('Repository Service Object', () => {
           name: 'backend',
           port: 4000,
         },
+        connected_service: ['db1', 'db2'],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
@@ -124,6 +126,7 @@ describe('Repository Service Object', () => {
           'nameOfDatabaseToBeCreated': 'mckDatabase',
           'schemaName': 'mckEmployees'
         },
+        connected_service: ['be1', 'be2'],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
