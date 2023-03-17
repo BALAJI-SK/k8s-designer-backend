@@ -35,7 +35,7 @@ const repositoryServiceObj = {
 
     await imageServiceRepository.create(
       {
-        imageRepositoryUrl:imageRepository.serverAddress,
+        imageRepositoryUrl:imageRepository.repositoryImageAddress,
         imageRepositoryToken:imageRepository.token,
         serviceId:serviceId,
       });
@@ -72,7 +72,7 @@ const repositoryServiceObj = {
     
     await imageServiceRepository.create(
       {
-        imageRepositoryUrl:imageRepository.serverAddress,
+        imageRepositoryUrl:imageRepository.repositoryImageAddress,
         imageRepositoryToken:imageRepository.token,
         serviceId:serviceId,
       });
