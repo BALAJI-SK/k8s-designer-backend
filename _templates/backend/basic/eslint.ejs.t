@@ -1,31 +1,19 @@
+---
+to: <%= outputPath %>/<%= name %>/.eslintrc.json
+force: true
+---
 {
     "env": {
-        "browser": true,
         "commonjs": true,
-        "es2021": true
+        "es2021": true,
+        "node": true,
+        "jest": true
     },
-    "globals": {
-        "process": true,
-        "__dirname": true,
-        "describe": true,
-        "it": true,
-        "jest":true,
-        "expect":true,
-        "before": true,
-        "after": true,
-        "beforeEach": true,
-        "afterEach": true,
-        "beforeAll":true,
-        "afterAll":true
-
-      },
     "extends": "eslint:recommended",
-    "overrides": [
-    ],
+    "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest"
     },
-    "ignorePatterns": ["node_modules/*", "tmp/*"],
     "rules": {
         "indent": [
             "error",
