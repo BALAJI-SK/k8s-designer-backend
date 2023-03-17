@@ -1,7 +1,6 @@
 const Docker = require("dockerode");
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 const pushDockerImage = require("../../src/services/pushDockerImage");
-const getDirectoryNamesInsideFolder = require("../../src/utility/getDirectoryNamesInsideFolder");
 
 jest.mock("dockerode", () => {
   const mockStream = {
@@ -19,41 +18,73 @@ jest.mock("dockerode", () => {
   const mockDocker = {
     getImage: jest.fn().mockReturnValue({
       push: jest.fn().mockResolvedValue(mockStream),
+      remove: jest.fn(),
     }),
   };
 
   return jest.fn(() => mockDocker);
 });
 
-jest.mock("../../src/utility/getDirectoryNamesInsideFolder", () => {
-  return jest.fn();
-});
+const config = {
+  frontend: [
+    {
+      name: "frontend",
+      username: "test",
+      password: "token",
+      email: "test@test.com",
+      serverAddress: "test.com",
+    },
+  ],
 
-const projectId = 1;
-const username = "username";
-const password = "password";
-const email = "email";
-const serverAddress = "serverAddress";
+  backend: [
+    {
+      name: "backend",
+      username: "test",
+      password: "token",
+      email: "test@test.com",
+      serverAddress: "test.com",
+    },
+  ],
 
-const mockBoilerplateNames = ["frontend", "backend"];
+  database: [],
+};
 
 describe("pushDockerImage", () => {
-  beforeEach(() => {
-    getDirectoryNamesInsideFolder.mockResolvedValue(mockBoilerplateNames);
-  });
-
   it("should push a docker image successfully", async () => {
-    await pushDockerImage(projectId, username, password, email, serverAddress);
+    await pushDockerImage(config);
 
-    expect(docker.getImage).toHaveBeenCalledWith("username/frontend");
-    expect(docker.getImage).toHaveBeenCalledWith("username/backend");
+    expect(docker.getImage).toHaveBeenCalledWith("test/frontend");
+    expect(docker.getImage).toHaveBeenCalledWith("test/backend");
+
+    const {
+      username: frontendUsername,
+      password: frontendPassword,
+      email: frontendEmail,
+      serverAddress: frontendServerAddress,
+    } = config.frontend[0];
 
     expect(docker.getImage().push).toHaveBeenCalledWith({
       authconfig: {
-        username,
-        password,
-        email,
-        serveraddress: serverAddress,
+        username: frontendUsername,
+        password: frontendPassword,
+        email: frontendEmail,
+        serveraddress: frontendServerAddress,
+      },
+    });
+
+    const {
+      username: backendUsername,
+      password: backendPassword,
+      email: backendEmail,
+      serverAddress: backendServerAddress,
+    } = config.backend[0];
+
+    expect(docker.getImage().push).toHaveBeenCalledWith({
+      authconfig: {
+        username: backendUsername,
+        password: backendPassword,
+        email: backendEmail,
+        serveraddress: backendServerAddress,
       },
     });
   });
@@ -63,10 +94,11 @@ describe("pushDockerImage", () => {
       push: jest.fn().mockImplementation(() => {
         throw new Error("Error while pushing image");
       }),
+      remove: jest.fn(),
     });
 
-    await expect(
-      pushDockerImage(projectId, username, password, email, serverAddress)
-    ).rejects.toThrow("Error while pushing image");
+    await expect(pushDockerImage(config)).rejects.toThrow(
+      "Error while pushing image"
+    );
   });
 });
