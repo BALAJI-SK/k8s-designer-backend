@@ -1,18 +1,28 @@
-var Docker = require('dockerode');
-var docker = new Docker({ socketPath: '/var/run/docker.sock' });
-const path = require('path');
-const { OUTPUT_PATH } = require('../../constants/app.constants');
-const getDirectoryNamesInsideFolder = require('../../utility/getDirectoryNamesInsideFolder');
+var Docker = require("dockerode");
+var docker = new Docker({ socketPath: "/var/run/docker.sock" });
+const path = require("path");
+const { OUTPUT_PATH } = require("../../constants/app.constants");
 
-const generateDockerImage = async (projectId, username) => {
+const generateDockerImage = async (projectId, config) => {
   const projectDir = path.join(OUTPUT_PATH, projectId.toString());
 
-  const boilerplateNames = await getDirectoryNamesInsideFolder(projectDir);
+  let boilerplates = [];
+
+  Object.values(config).forEach((microservice) => {
+    microservice.forEach((instance) => {
+      boilerplates.push({
+        name: instance.name,
+        username: instance.username,
+      });
+    });
+  });
 
   await Promise.all(
-    boilerplateNames.map(async (boilerplateName) => {
-      return new Promise((resolve, reject) => {
-        const boilerplatePath = path.join(projectDir, boilerplateName);
+    boilerplates.map(async (boilerplate) => {
+      const { name, username } = boilerplate;
+
+      await new Promise((resolve, reject) => {
+        const boilerplatePath = path.join(projectDir, name);
 
         docker
           .buildImage(
@@ -20,7 +30,7 @@ const generateDockerImage = async (projectId, username) => {
               context: boilerplatePath,
               src: ['Dockerfile', '.'],
             },
-            { t: `${username}/${boilerplateName}` }
+            { t: `${username}/${name}` }
           )
           .then((stream) => {
             stream.on('data', (data) => {
@@ -35,10 +45,30 @@ const generateDockerImage = async (projectId, username) => {
               reject(err);
             });
           })
-          .catch(reject);
+          .catch((err) => {
+            reject(err);
+          });
       });
     })
   );
 };
+
+// generateDockerImage(1, {
+//   frontend: [
+//     {
+//       name: "frontend",
+//       username: "preetindersingh",
+//     },
+//   ],
+
+//   backend: [
+//     {
+//       name: "backend",
+//       username: "preetindersingh",
+//     },
+//   ],
+
+//   database: [],
+// });
 
 module.exports = generateDockerImage;

@@ -1,7 +1,6 @@
-const Docker = require('dockerode');
-const docker = new Docker({ socketPath: '/var/run/docker.sock' });
-const generateDockerImage = require('../../../src/services/generators/docker-image');
-const getDirectoryNamesInsideFolder = require('../../../src/utility/getDirectoryNamesInsideFolder');
+const Docker = require("dockerode");
+const docker = new Docker({ socketPath: "/var/run/docker.sock" });
+const generateDockerImage = require("../../../src/services/generators/docker-image");
 
 jest.mock('dockerode', () => {
   const mockStream = {
@@ -23,29 +22,36 @@ jest.mock('dockerode', () => {
   return jest.fn(() => mockDocker);
 });
 
-jest.mock('../../../src/utility/getDirectoryNamesInsideFolder', () => {
-  return jest.fn();
-});
-
 const projectId = 1;
-const username = 'username';
 
-const mockBoilerplateNames = ['frontend', 'backend'];
+const config = {
+  frontend: [
+    {
+      name: "frontend",
+      username: "test",
+    },
+  ],
 
-describe('generateDockerImage', () => {
-  beforeEach(() => {
-    getDirectoryNamesInsideFolder.mockResolvedValue(mockBoilerplateNames);
-  });
+  backend: [
+    {
+      name: "backend",
+      username: "test",
+    },
+  ],
 
-  it('should generate a docker image successfully', async () => {
-    await generateDockerImage(projectId, username);
+  database: [],
+};
+
+describe("generateDockerImage", () => {
+  it("should generate a docker image successfully", async () => {
+    await generateDockerImage(projectId, config);
 
     expect(docker.buildImage).toHaveBeenCalledWith(
       {
         context: expect.any(String),
         src: ['Dockerfile', '.'],
       },
-      { t: 'username/frontend' }
+      { t: "test/frontend" }
     );
 
     expect(docker.buildImage).toHaveBeenCalledWith(
@@ -53,7 +59,7 @@ describe('generateDockerImage', () => {
         context: expect.any(String),
         src: ['Dockerfile', '.'],
       },
-      { t: 'username/backend' }
+      { t: "test/backend" }
     );
   });
 
@@ -62,8 +68,8 @@ describe('generateDockerImage', () => {
       throw new Error('Error while generating image');
     });
 
-    await expect(generateDockerImage(projectId, username)).rejects.toThrow(
-      'Error while generating image'
+    await expect(generateDockerImage(projectId, config)).rejects.toThrow(
+      "Error while generating image"
     );
   });
 });
