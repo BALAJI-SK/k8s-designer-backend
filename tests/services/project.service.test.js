@@ -105,34 +105,7 @@ describe('microservices service testing', () => {
     };
 
     const result = await services.generateProject(mockreq.body);
-    expect(result).toEqual({'services':[
-      {
-        'service_type': 'FrontEnd',
-        'configurations':{
-          'reactVersion': '2.08',
-          'port':'5432',
-          'numberOfReplicas':5,
-          'name':'React Todo App'
-        },
-        'customEnv':{
-          'field': 'port',
-          'value':'2345'
-        }
-      },
-      {
-        'service_type': 'BackEnd',
-        'configurations':{
-          'reactVersion': '2.08',
-          'port':'5432',
-          'numberOfReplicas':5,
-          'name':'React Todo App'
-        },
-        'customEnv':{
-          'field': 'port',
-          'value':'2345'
-        }
-      }
-    ]});
+    expect(result).toEqual(path.join(OUTPUT_PATH, `${projectId}.zip`));
   });
   it('should call the generators with correct parameters', async () => {
     const folderPath = path.join(OUTPUT_PATH, projectId.toString());
