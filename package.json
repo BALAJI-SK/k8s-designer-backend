@@ -4,7 +4,7 @@
   "description": "Standalone Backend Boilerplate using NodeJS and Express",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest --watchAll",
+    "test": "npx jest",
     "test-coverage": "concurrently 'npx jest tests' 'npx jest --coverage'",
     "start": "npx nodemon index.js",
     "linting": "npx eslint --fix .",
