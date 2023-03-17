@@ -17,7 +17,7 @@ const pushDockerImage = async (
 
   await Promise.all(
     boilerplateNames.map(async (boilerplateName) => {
-      await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const image = docker.getImage(`${username}/${boilerplateName}`);
 
         image

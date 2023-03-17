@@ -1,8 +1,4 @@
 const services = require('../../src/services/project.service.js');
-
-const frontendServiceRepository = require('../../src/repositories/frontendService.repositories.js');
-const envVariablesRepository = require('../../src/repositories/envVariables.repositories.js');
-const projectServiceConfigRepository = require('../../src/repositories/projectServiceConfig.repositories.js');
 const projectRepository = require('../../src/repositories/project.repositories');
 const { generateBoilerplate } = require('../../src/services/generators/generateBoilerplate.service.js');
 const dockerComposeGenerator = require('../../src/services/generators/docker-compose.js');
@@ -54,38 +50,42 @@ jest.mock('../../src/services/zipping.service.js', () => {
     zipFolder: jest.fn(),
   };
 });
+const repositoryServiceObj = require('../../src/utility/projects.utils.js');
 
 describe('microservices service testing', () => {
   it('should populate microservice table ', async () => {
 
-    jest.spyOn(frontendServiceRepository,'create').mockResolvedValueOnce({
-      'id':1,
-      'reactVersion': '2.08',
-      'numberOfReplicas':5,
-      'name':'React Todo App',
-      'port':'5432'
-    });
-    jest.spyOn(envVariablesRepository,'create').mockResolvedValueOnce({
-      'id':2,
-      'field': 'port',
-      'value':'2345',
-      'frontendServicesId':1
-    });
+  
     jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
       'id':projectId,
       'userId':4
     });
-    jest.spyOn(projectServiceConfigRepository,'create').mockResolvedValueOnce({
-      'id':5,
-      'serviceType':'FrontEnd',
-      'serviceId':1,
-      'projectId':3
-    });
 
+
+   
+    jest.spyOn(repositoryServiceObj,'FrontEnd').mockResolvedValueOnce({
+      'id':3,
+    });
+    jest.spyOn(repositoryServiceObj,'BackEnd').mockResolvedValueOnce({
+      'id':4,
+    });
 
     const mockreq = {body:{'services':[
       {
         'service_type': 'FrontEnd',
+        'configurations':{
+          'reactVersion': '2.08',
+          'port':'5432',
+          'numberOfReplicas':5,
+          'name':'React Todo App'
+        },
+        'customEnv':{
+          'field': 'port',
+          'value':'2345'
+        }
+      },
+      {
+        'service_type': 'BackEnd',
         'configurations':{
           'reactVersion': '2.08',
           'port':'5432',
@@ -108,6 +108,19 @@ describe('microservices service testing', () => {
     expect(result).toEqual({'services':[
       {
         'service_type': 'FrontEnd',
+        'configurations':{
+          'reactVersion': '2.08',
+          'port':'5432',
+          'numberOfReplicas':5,
+          'name':'React Todo App'
+        },
+        'customEnv':{
+          'field': 'port',
+          'value':'2345'
+        }
+      },
+      {
+        'service_type': 'BackEnd',
         'configurations':{
           'reactVersion': '2.08',
           'port':'5432',

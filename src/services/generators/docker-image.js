@@ -11,7 +11,7 @@ const generateDockerImage = async (projectId, username) => {
 
   await Promise.all(
     boilerplateNames.map(async (boilerplateName) => {
-      await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         const boilerplatePath = path.join(projectDir, boilerplateName);
 
         docker
