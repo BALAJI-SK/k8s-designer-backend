@@ -3,6 +3,7 @@ const projectServiceConfigRepository = require('../repositories/projectServiceCo
 const envVariablesRepository = require('../repositories/envVariables.repositories');
 const frontendServiceRepository = require('../repositories/frontendService.repositories');
 const backendServiceRepository = require('../repositories/backendService.repositories');
+const imageServiceRepository = require('../repositories/imageService.repositories');
 const databaseServiceRepository = require('../repositories/databaseService.repositories');
 
 const getKeyValuePairs =(obj)=>{
@@ -17,7 +18,7 @@ const getKeyValuePairs =(obj)=>{
 
 const repositoryServiceObj = {
   FrontEnd: async (service, projectId)=>{
-    const {service_type,configurations,connected_service, customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv,imageRepository} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -37,6 +38,14 @@ const repositoryServiceObj = {
       }
       
     );
+
+    await imageServiceRepository.create(
+      {
+        imageRepositoryUrl:imageRepository.repositoryImageAddress,
+        imageRepositoryToken:imageRepository.token,
+        serviceId:serviceId,
+      });
+
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
         {
@@ -58,7 +67,7 @@ const repositoryServiceObj = {
   },
 
   BackEnd: async (service, projectId)=>{
-    const {service_type,configurations,connected_service, customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv,imageRepository} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -78,6 +87,14 @@ const repositoryServiceObj = {
       }
       
     );
+
+    await imageServiceRepository.create(
+      {
+        imageRepositoryUrl:imageRepository.repositoryImageAddress,
+        imageRepositoryToken:imageRepository.token,
+        serviceId:serviceId,
+      });
+
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
         {
@@ -100,7 +117,7 @@ const repositoryServiceObj = {
     return serviceId;
   },
   Database: async (service, projectId)=>{
-    const {service_type,configurations,connected_service, customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv,imageRepository} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -117,6 +134,14 @@ const repositoryServiceObj = {
       }
       
     );
+
+    await imageServiceRepository.create(
+      {
+        imageRepositoryUrl:imageRepository.repositoryImageAddress,
+        imageRepositoryToken:imageRepository.token,
+        serviceId:serviceId,
+      });
+      
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
         {
