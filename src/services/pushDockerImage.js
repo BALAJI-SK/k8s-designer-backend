@@ -33,7 +33,7 @@ const pushDockerImage = async (config) => {
             },
           })
           .then((stream) => {
-            stream.on("data", (data) => {
+            stream.on('data', (data) => {
               console.log(data.toString());
             });
 
@@ -49,7 +49,7 @@ const pushDockerImage = async (config) => {
               resolve();
             });
 
-            stream.on("error", (err) => {
+            stream.on('error', (err) => {
               reject(err);
             });
           })

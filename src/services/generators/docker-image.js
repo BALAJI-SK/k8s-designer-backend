@@ -28,20 +28,20 @@ const generateDockerImage = async (projectId, config) => {
           .buildImage(
             {
               context: boilerplatePath,
-              src: ["Dockerfile", "."],
+              src: ['Dockerfile', '.'],
             },
             { t: `${username}/${name}` }
           )
           .then((stream) => {
-            stream.on("data", (data) => {
+            stream.on('data', (data) => {
               console.log(data.toString());
             });
 
-            stream.on("end", () => {
+            stream.on('end', () => {
               resolve();
             });
 
-            stream.on("error", (err) => {
+            stream.on('error', (err) => {
               reject(err);
             });
           })

@@ -2,6 +2,7 @@ const projectServiceConfigRepository = require('../../src/repositories/projectSe
 const envVariablesRepository = require('../../src/repositories/envVariables.repositories');
 const frontendServiceRepository = require('../../src/repositories/frontendService.repositories');
 const backendServiceRepository = require('../../src/repositories/backendService.repositories');
+const databaseServiceRepository = require('../../src/repositories/databaseService.repositories');
 
 jest.mock('../../src/repositories/projectServiceConfig.repositories', () => ({
   create: jest.fn(),
@@ -16,6 +17,10 @@ jest.mock('../../src/repositories/frontendService.repositories', () => ({
 }));
 
 jest.mock('../../src/repositories/backendService.repositories', () => ({
+  create: jest.fn(),
+}));
+
+jest.mock('../../src/repositories/databaseService.repositories', () => ({
   create: jest.fn(),
 }));
 
@@ -35,9 +40,9 @@ describe('Repository Service Object', () => {
           name: 'frontend',
           port: 3000,
         },
+        connected_service: [],
         customEnv: {
-          field: 'DATABASE_URL',
-          value: 'postgres://localhost:5432/mydb',
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
       };
       const projectId = 1;
@@ -76,9 +81,9 @@ describe('Repository Service Object', () => {
           name: 'backend',
           port: 4000,
         },
+        connected_service: ['db1', 'db2'],
         customEnv: {
-          field: 'DATABASE_URL',
-          value: 'postgres://localhost:5432/mydb',
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
       };
       const projectId = 1;
@@ -109,9 +114,51 @@ describe('Repository Service Object', () => {
   });
 
   describe('called with Database as key', () => {
-    it('should do nothing', async () => {
-      const result = await repositoryServiceObj.Database();
-      expect(result).toBeUndefined();
+    it('should create a new database service', async () => {
+      const service = {
+        service_type: 'Database',
+        configurations: {
+          'port':'5432',
+          'numberOfReplicas':5,
+          'defaultUser': 'postgres',
+          'defaultUserPassword': 'abcd',
+          'rootUserPassword': 'efgh',
+          'nameOfDatabaseToBeCreated': 'mckDatabase',
+          'schemaName': 'mckEmployees'
+        },
+        connected_service: ['be1', 'be2'],
+        customEnv: {
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
+        },
+      };
+      const projectId = 1;
+
+      projectServiceConfigRepository.create.mockResolvedValue({ id: 1 });
+      databaseServiceRepository.create.mockResolvedValue({ id: 1 });
+      envVariablesRepository.create.mockResolvedValue({ id: 1 });
+
+      const serviceId = await repositoryServiceObj.Database(service, projectId);
+
+      expect(serviceId).toBe(1);
+      expect(projectServiceConfigRepository.create).toHaveBeenCalledWith({
+        serviceType: 'Database',
+        projectId,
+      });
+      expect(databaseServiceRepository.create).toHaveBeenCalledWith({
+        port: '5432',
+        numberOfReplicas: 5,
+        defaultUser: 'postgres',
+        'defaultUserPassword': 'abcd',
+        'rootUserPassword': 'efgh',
+        'nameOfDatabaseToBeCreated': 'mckDatabase',
+        'schemaName': 'mckEmployees',
+        serviceId: 1,
+      });
+      expect(envVariablesRepository.create).toHaveBeenCalledWith({
+        field: 'DATABASE_URL',
+        value: 'postgres://localhost:5432/mydb',
+        serviceId: 1,
+      });
     });
   });
 

@@ -1,7 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const archive = require("../config/archiver.config.js");
-const folderUtility = require("../utility/folder.utility.js");
+const fs = require('fs');
+const path = require('path');
+const archive = require('../config/archiver.config.js');
+const folderUtility = require('../utility/folder.utility.js');
 
 const zipFolder = (folderPath, outputPath) => {
   const outputFilePath = path.resolve(outputPath);
@@ -19,7 +19,7 @@ const zipFolder = (folderPath, outputPath) => {
         archive.directory(resolvedFolderPath, folderName);
         archive.finalize();
 
-        output.on("close", () => {
+        output.on('close', () => {
           resolve(outputFilePath);
         });
       })

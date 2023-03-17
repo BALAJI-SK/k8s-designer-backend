@@ -37,6 +37,7 @@ model projectServiceConfig {
   serviceType     String            @map("service_type")
   frontendService frontendService[]
   backendService  backendService[]
+  databaseService databaseService[]
   envVariables    envVariables[]
 
   @@map("project_service_configs")
@@ -63,7 +64,20 @@ model backendService {
 
   @@map("backend_services")
 }
+model databaseService {
+  id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  port                 String                @map("port")
+  numberOfReplicas     Int                   @map("number_of_replicas")
+  defaultUser          String                @map("default_user")
+  defaultUserPassword  String                @map("default_user_password")
+  rootUserPassword     String                @map("root_user_password")
+  nameOfDatabaseToBeCreated         String                @map("database_name")
+  schemaName           String                @map("schema_name") @default("public")
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  serviceId            String                @map("service_id") @db.Uuid  @default(dbgenerated("gen_random_uuid()"))
 
+  @@map("database_services")
+}
 model envVariables {
   id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   field                String                @map("field")

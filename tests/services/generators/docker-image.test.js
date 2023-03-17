@@ -2,15 +2,15 @@ const Docker = require("dockerode");
 const docker = new Docker({ socketPath: "/var/run/docker.sock" });
 const generateDockerImage = require("../../../src/services/generators/docker-image");
 
-jest.mock("dockerode", () => {
+jest.mock('dockerode', () => {
   const mockStream = {
     on: jest.fn().mockImplementation(function (event, callback) {
-      if (event === "data") {
-        callback("data");
-      } else if (event === "end") {
+      if (event === 'data') {
+        callback('data');
+      } else if (event === 'end') {
         callback();
-      } else if (event === "error") {
-        callback(new Error("Error while generating image"));
+      } else if (event === 'error') {
+        callback(new Error('Error while generating image'));
       }
     }),
   };
@@ -49,7 +49,7 @@ describe("generateDockerImage", () => {
     expect(docker.buildImage).toHaveBeenCalledWith(
       {
         context: expect.any(String),
-        src: ["Dockerfile", "."],
+        src: ['Dockerfile', '.'],
       },
       { t: "test/frontend" }
     );
@@ -57,15 +57,15 @@ describe("generateDockerImage", () => {
     expect(docker.buildImage).toHaveBeenCalledWith(
       {
         context: expect.any(String),
-        src: ["Dockerfile", "."],
+        src: ['Dockerfile', '.'],
       },
       { t: "test/backend" }
     );
   });
 
-  it("should throw an error if there is an error while generating the image", async () => {
+  it('should throw an error if there is an error while generating the image', async () => {
     docker.buildImage.mockImplementation(() => {
-      throw new Error("Error while generating image");
+      throw new Error('Error while generating image');
     });
 
     await expect(generateDockerImage(projectId, config)).rejects.toThrow(
