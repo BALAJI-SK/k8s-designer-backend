@@ -1,5 +1,4 @@
-name: Pull Request Check
-
+name: Pull Request Check & Push request check on their own branch
 on:
   pull_request:
     types:
@@ -11,7 +10,6 @@ on:
       - feat/**
       - feature/**
       - dev/**
-
 jobs:
   pull-request-check:
     runs-on: ubuntu-latest
