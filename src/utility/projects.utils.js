@@ -17,7 +17,7 @@ const getKeyValuePairs =(obj)=>{
 
 const repositoryServiceObj = {
   FrontEnd: async (service, projectId)=>{
-    const {service_type,configurations,customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -37,6 +37,15 @@ const repositoryServiceObj = {
       }
       
     );
+    for(const connectedService of connected_service){
+      await envVariablesRepository.create(
+        {
+          field:connectedService,
+          value: 'connected',
+          serviceId,
+        }
+      );
+    }
     const envVariables = getKeyValuePairs(customEnv);
     for(const envVariable of envVariables){
       await envVariablesRepository.create(
@@ -49,7 +58,7 @@ const repositoryServiceObj = {
   },
 
   BackEnd: async (service, projectId)=>{
-    const {service_type,configurations,customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -69,6 +78,15 @@ const repositoryServiceObj = {
       }
       
     );
+    for(const connectedService of connected_service){
+      await envVariablesRepository.create(
+        {
+          field:connectedService,
+          value: 'connected',
+          serviceId,
+        }
+      );
+    }
     const envVariables = getKeyValuePairs(customEnv);
     for(const envVariable of envVariables){
       await envVariablesRepository.create(
@@ -82,7 +100,7 @@ const repositoryServiceObj = {
     return serviceId;
   },
   Database: async (service, projectId)=>{
-    const {service_type,configurations,customEnv} = service;
+    const {service_type,configurations,connected_service, customEnv} = service;
     const projectServiceConfigResult = await projectServiceConfigRepository.create(
       {
         serviceType:service_type,
@@ -99,6 +117,15 @@ const repositoryServiceObj = {
       }
       
     );
+    for(const connectedService of connected_service){
+      await envVariablesRepository.create(
+        {
+          field:connectedService,
+          value: 'connected',
+          serviceId,
+        }
+      );
+    }
     const envVariables = getKeyValuePairs(customEnv);
     for(const envVariable of envVariables){
       await envVariablesRepository.create(
