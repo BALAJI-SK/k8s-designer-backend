@@ -10,7 +10,6 @@
     "linting": "npx eslint --fix .",
     "nodemon": "nodemon index.js",
     "prod:install": "NODE_ENV=production npm install "
-    
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -44,6 +43,7 @@
     "fs-extra": "^11.1.0",
     "hygen": "^6.2.11",
     "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.0",
     "mustache": "^4.2.0",
     "path": "^0.12.7"
   }

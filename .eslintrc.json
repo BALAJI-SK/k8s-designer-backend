@@ -25,6 +25,7 @@
     "parserOptions": {
         "ecmaVersion": "latest"
     },
+    "ignorePatterns": ["node_modules/*", "tmp/*"],
     "rules": {
         "indent": [
             "error",

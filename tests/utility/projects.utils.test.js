@@ -2,6 +2,7 @@ const projectServiceConfigRepository = require('../../src/repositories/projectSe
 const envVariablesRepository = require('../../src/repositories/envVariables.repositories');
 const frontendServiceRepository = require('../../src/repositories/frontendService.repositories');
 const backendServiceRepository = require('../../src/repositories/backendService.repositories');
+const databaseServiceRepository = require('../../src/repositories/databaseService.repositories');
 const imageServiceRepository = require('../../src/repositories/imageService.repositories');
 
 jest.mock('../../src/repositories/projectServiceConfig.repositories', () => ({
@@ -17,6 +18,10 @@ jest.mock('../../src/repositories/frontendService.repositories', () => ({
 }));
 
 jest.mock('../../src/repositories/backendService.repositories', () => ({
+  create: jest.fn(),
+}));
+
+jest.mock('../../src/repositories/databaseService.repositories', () => ({
   create: jest.fn(),
 }));
 
@@ -41,11 +46,10 @@ describe('Repository Service Object', () => {
           port: 3000,
         },
         customEnv: {
-          field: 'DATABASE_URL',
-          value: 'postgres://localhost:5432/mydb',
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
         imageRepository:{
-          serverAddress:'http://dockerhub.com',
+          repositoryImageAddress:'http://dockerhub.com',
           token:'2393040402919919939302'
         }
       };
@@ -92,11 +96,10 @@ describe('Repository Service Object', () => {
           port: 4000,
         },
         customEnv: {
-          field: 'DATABASE_URL',
-          value: 'postgres://localhost:5432/mydb',
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
         },
         imageRepository:{
-          serverAddress:'http://dockerhub.com',
+          repositoryImageAddress:'http://dockerhub.com',
           token:'2393040402919919939302'
         }
       };
@@ -135,9 +138,59 @@ describe('Repository Service Object', () => {
   });
 
   describe('called with Database as key', () => {
-    it('should do nothing', async () => {
-      const result = await repositoryServiceObj.Database();
-      expect(result).toBeUndefined();
+    it('should create a new database service', async () => {
+      const service = {
+        service_type: 'Database',
+        configurations: {
+          'port':'5432',
+          'numberOfReplicas':5,
+          'defaultUser': 'postgres',
+          'defaultUserPassword': 'abcd',
+          'rootUserPassword': 'efgh',
+          'nameOfDatabaseToBeCreated': 'mckDatabase',
+          'schemaName': 'mckEmployees'
+        },
+        customEnv: {
+          'DATABASE_URL': 'postgres://localhost:5432/mydb',
+        },
+        imageRepository:{
+          repositoryImageAddress:'http://dockerhub.com',
+          token:'2393040402919919939302'
+        }
+      };
+      const projectId = 1;
+
+      projectServiceConfigRepository.create.mockResolvedValue({ id: 1 });
+      databaseServiceRepository.create.mockResolvedValue({ id: 1 });
+      envVariablesRepository.create.mockResolvedValue({ id: 1 });
+
+      const serviceId = await repositoryServiceObj.Database(service, projectId);
+
+      expect(serviceId).toBe(1);
+      expect(projectServiceConfigRepository.create).toHaveBeenCalledWith({
+        serviceType: 'Database',
+        projectId,
+      });
+      expect(databaseServiceRepository.create).toHaveBeenCalledWith({
+        port: '5432',
+        numberOfReplicas: 5,
+        defaultUser: 'postgres',
+        'defaultUserPassword': 'abcd',
+        'rootUserPassword': 'efgh',
+        'nameOfDatabaseToBeCreated': 'mckDatabase',
+        'schemaName': 'mckEmployees',
+        serviceId: 1,
+      });
+      expect(envVariablesRepository.create).toHaveBeenCalledWith({
+        field: 'DATABASE_URL',
+        value: 'postgres://localhost:5432/mydb',
+        serviceId: 1,
+      });
+      expect(imageServiceRepository.create).toHaveBeenCalledWith({
+        imageRepositoryUrl: 'http://dockerhub.com',
+        imageRepositoryToken: '2393040402919919939302',
+        serviceId: 1,
+      });
     });
   });
 
