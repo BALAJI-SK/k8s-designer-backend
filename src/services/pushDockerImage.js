@@ -1,24 +1,27 @@
-var Docker = require('dockerode');
-var docker = new Docker({ socketPath: '/var/run/docker.sock' });
-const path = require('path');
-const { OUTPUT_PATH } = require('../constants/app.constants');
-const getDirectoryNamesInsideFolder = require('../utility/getDirectoryNamesInsideFolder');
+var Docker = require("dockerode");
+var docker = new Docker({ socketPath: "/var/run/docker.sock" });
 
-const pushDockerImage = async (
-  projectId,
-  username,
-  password,
-  email,
-  serverAddress
-) => {
-  const projectDir = path.join(OUTPUT_PATH, projectId.toString());
+const pushDockerImage = async (config) => {
+  let boilerplates = [];
 
-  const boilerplateNames = await getDirectoryNamesInsideFolder(projectDir);
+  Object.values(config).forEach((microservice) => {
+    microservice.forEach((instance) => {
+      boilerplates.push({
+        name: instance.name,
+        username: instance.username,
+        password: instance.password,
+        email: instance.email,
+        serverAddress: instance.serverAddress,
+      });
+    });
+  });
 
   await Promise.all(
-    boilerplateNames.map(async (boilerplateName) => {
-      return new Promise((resolve, reject) => {
-        const image = docker.getImage(`${username}/${boilerplateName}`);
+    boilerplates.map(async (boilerplate) => {
+      const { name, username, password, email, serverAddress } = boilerplate;
+
+      await new Promise((resolve, reject) => {
+        const image = docker.getImage(`${username}/${name}`);
 
         image
           .push({
@@ -34,7 +37,15 @@ const pushDockerImage = async (
               console.log(data.toString());
             });
 
-            stream.on('end', () => {
+            stream.on("end", () => {
+              image.remove({ force: true }, (err) => {
+                if (err) {
+                  console.error(`Failed to delete ${username}/${name}: ${err}`);
+                } else {
+                  console.log(`Deleted ${username}/${name}`);
+                }
+              });
+
               resolve();
             });
 
@@ -42,10 +53,36 @@ const pushDockerImage = async (
               reject(err);
             });
           })
-          .catch(reject);
+          .catch((err) => {
+            reject(err);
+          });
       });
     })
   );
 };
+
+// pushDockerImage({
+//   frontend: [
+//     {
+//       name: "frontend",
+//       username: "preetindersingh",
+//       password: "dckr_pat_seRkvzxj4_UgQRgRRqmkc_XrN7s",
+//       email: "preetindersingh072@gmail.com",
+//       serverAddress: "registry.hub.docker.com",
+//     },
+//   ],
+
+//   backend: [
+//     {
+//       name: "backend",
+//       username: "preetindersingh",
+//       password: "dckr_pat_seRkvzxj4_UgQRgRRqmkc_XrN7s",
+//       email: "preetindersingh072@gmail.com",
+//       serverAddress: "registry.hub.docker.com",
+//     },
+//   ],
+
+//   database: [],
+// });
 
 module.exports = pushDockerImage;

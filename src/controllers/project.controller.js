@@ -3,7 +3,7 @@ const ProjectService = require('../services/project.service');
 
 const generateProjectController = async (req,res)=>{
   try{
-    console.log(req.body);
+    // console.log(req.body);
     const zipPath = await ProjectService.generateProject(req.body);
     res.status(200).download(zipPath);
   }catch (err) {

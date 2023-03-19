@@ -2,14 +2,14 @@ const prisma = require('../config/prisma.config');
 
 const create= async (data)=>{
   try{
-    const backendServicesResult = await prisma.backendService.create(
+    const imageServiceResult = await prisma.imageRepository.create(
       {data }
     );
-    return backendServicesResult;
+    return imageServiceResult;
   }catch(e){
     console.log(e);
 
-    throw new Error('Error creating backendService: ',{cause:e});
+    throw new Error('Error creating imageRepository: ',{cause:e});
   }
  
 };
