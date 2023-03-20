@@ -4,5 +4,5 @@ const userRoutes = require('./user.routes');
 const projectRoutes = require('./project.routes');
 
 router.use('/user', userRoutes);
-router.use('/project', projectRoutes);
+router.use('/projects', projectRoutes);
 module.exports = router; 
