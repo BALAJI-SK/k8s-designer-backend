@@ -2,16 +2,14 @@
 to: <%= outputPath %>/<%= name %>/Dockerfile
 force: true
 ---
-FROM alpine:latest
-
-RUN apk add --update nodejs npm
-
+FROM node:alpine AS builder
 WORKDIR /app
-
-COPY package.json package.json
-
-RUN npm install
-
 COPY . .
+RUN npm install && npm run build
 
-ENTRYPOINT ["npm", "start"]
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/build .
+COPY nginx.conf /etc/nginx/nginx.conf
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

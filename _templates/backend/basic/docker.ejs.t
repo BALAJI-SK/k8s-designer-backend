@@ -2,9 +2,7 @@
 to: <%= outputPath %>/<%= name %>/Dockerfile
 force: true
 ---
-FROM alpine:latest
-
-RUN apk add --update nodejs npm
+FROM node:alpine
 
 WORKDIR /app
 

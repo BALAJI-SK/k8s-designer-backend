@@ -5,9 +5,9 @@ services:
     image: {{{image}}}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      interval: 15s
+      timeout: 15s
+      retries: 15
     {{#envVariables.0}}
     environment:
     {{/envVariables.0}}
@@ -24,7 +24,7 @@ services:
   {{name}}:
     image: {{{image}}}
     ports:
-      - "{{hostPort}}:{{containerPort}}"
+      - "{{hostPort}}:80"
     {{#envVariables.0}}
     environment:
     {{/envVariables.0}}
@@ -34,7 +34,7 @@ services:
 {{/frontend}}
 {{#backend}}
   {{name}}:
-    image: {{image}}
+    image: {{{image}}}
     ports:
       - "{{hostPort}}:{{containerPort}}"
     depends_on:
