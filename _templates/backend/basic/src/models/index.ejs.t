@@ -23,13 +23,13 @@ for(let i = 0; i < databases.length; ++i) {
 
 <%_ databases.forEach((database) => { _%>
 fs
-    .readdirSync(__dirname + '/<%= database.dbName %>')
+    .readdirSync(__dirname + '/<%= database.name %>')
     .filter(file =>
         (file.indexOf('.') !== 0) &&
         (file !== basename) &&
         (file.slice(-3) === '.js'))
     .forEach(file => {
-        const model = require(path.join(__dirname + '/<%= database.dbName %>', file))(db.<%= database.dbName %>, Sequelize.DataTypes);  
+        const model = require(path.join(__dirname + '/<%= database.name %>', file))(db.<%= database.name %>, Sequelize.DataTypes);  
         db[model.name] = model;
     });
 <%_ }) _%>

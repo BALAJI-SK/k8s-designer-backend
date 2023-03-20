@@ -1,15 +1,15 @@
 ---
-to: <%= outputPath %>/<%= dbName %>/Dockerfile
+to: <%= outputPath %>/<%= name %>/Dockerfile
 force: true
 ---
 
-FROM postgres:<%= dbVersion %>
+FROM postgres:latest
 
 ENV POSTGRES_USER <%= dbUser %>
 ENV POSTGRES_PASSWORD <%= dbPassword %>
-ENV POSTGRES_DB <%= dbName %>
+ENV POSTGRES_DB <%= name %>
 
-EXPOSE <%= dbContainerPort %>
+EXPOSE <%= port %>
 
 VOLUME /var/lib/postgresql/data
 

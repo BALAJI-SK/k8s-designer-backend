@@ -27,19 +27,21 @@ const getConfigurations = (services) => {
       });
     }
     else if(service['service_type'] === 'BackEnd'){
+      serviceConfig['databases'] = [];
+      serviceConfig['frontends'] = [];
       service['connected_service'].forEach((serviceName, index) => {
         const connectedService = services.find((service) => service['configurations']['name'] === serviceName);
         if(connectedService['service_type'] === 'Database'){
-          serviceConfig['databases'] = {
+          serviceConfig['databases'].push({
             ...connectedService['configurations'],
             model: MODELS[index]
-          };
+          });
         }
         else if(connectedService['service_type'] === 'FrontEnd'){
-          serviceConfig['frontends'] = {
+          serviceConfig['frontends'].push({
             name: connectedService['configurations']['name'],
             port: connectedService['configurations']['port'],
-          };
+          });
         }
       });
         

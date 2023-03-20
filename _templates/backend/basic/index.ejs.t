@@ -6,13 +6,13 @@ const express = require('express');
 const routes =require('./src/routes/healthcheck.routes.js');
 
 const app = express();
-const PORT = process.env.PORT || <%= containerPort %>;
+const PORT = process.env.PORT || <%= port %>;
 
 <% if(frontends.length >0) {-%>
 const cors = require('cors');
 const corsOrigins = [
   <% frontends.map(frontend => { %>
-  '<%= frontend.url + ':' + frontend.port %>',
+  'http://<%= frontend.name + ':' + frontend.port %>',
   <% }); %>
 ];
 

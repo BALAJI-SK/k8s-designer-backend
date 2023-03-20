@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= name %>/database/migrations/<%= database.dbName %>/create-model.js
+to: <%= outputPath %>/<%= name %>/database/migrations/<%= database.name %>/create-model.js
 force: true
 ---
 'use strict';

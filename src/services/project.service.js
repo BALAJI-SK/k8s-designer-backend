@@ -26,18 +26,23 @@ const generateProject = async (data) =>{
   const configurations = getConfigurations(services);
   console.log(configurations);
   let generatorResponses = [];
-  services.forEach((service)=>{
-    generatorResponses.push(generateBoilerplate(projectId, service.service_type, configurations));        
+  Object.keys(configurations).forEach((key)=>{
+    generatorResponses.push(generateBoilerplate(projectId, key, configurations));
   });
   await Promise.all(generatorResponses);
   console.log('All boilerplates generated');
+
   await dockerComposeGenerator(projectId, configurations);
   console.log('Docker compose generated');
-  await generateDockerImage(projectId, configurations.auth.username);
-  await pushDockerImage(projectId, configurations.auth.username, configurations.auth.password, configurations.auth.email, configurations.auth.serverAddress);
+
+  generateDockerImage(projectId, configurations).then(() => {
+    console.log('Docker image generated');
+    pushDockerImage(configurations);
+  });
   
   await k8sManifestGenerator(projectId);
   console.log('K8s manifest generated');
+  
   const folderPath = path.join(OUTPUT_PATH, projectId.toString());
   const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);
   await zipFolder(folderPath, zipPath);

@@ -14,12 +14,12 @@ const runHygen = (projectId, generator, action, config) => {
       '--config',
       JSON.stringify(config),
     ]);
-    // hygenProcess.stdout.on('data', (data) => {
-    //   console.log(data.toString());
-    // });
-    // hygenProcess.stderr.on('data', (data) => {
-    //   console.log(data.toString());
-    // });
+    hygenProcess.stdout.on('data', (data) => {
+      console.log(data.toString());
+    });
+    hygenProcess.stderr.on('data', (data) => {
+      console.log(data.toString());
+    });
     hygenProcess.on('close', (code) => {
       if (code === 0) {
         resolve(code);
@@ -31,16 +31,16 @@ const runHygen = (projectId, generator, action, config) => {
 };
 
 const generateBoilerplateObj = {
-  frontend: (projectId, config) => {
+  FrontEnd: (projectId, config) => {
     const response = [];
-    config.frontend.forEach((frontend) => {
+    config.FrontEnd.forEach((frontend) => {
       response.push(runHygen(projectId, 'frontend', 'basic', frontend));
     });
     return Promise.all(response);
   },
-  backend: (projectId, config) => {
+  BackEnd: (projectId, config) => {
     const response = [];
-    config.backend.forEach((backend) => {
+    config.BackEnd.forEach((backend) => {
       backend.databases.forEach((db) => {
         const database = {
           name: backend.name,
@@ -52,9 +52,9 @@ const generateBoilerplateObj = {
     });
     return Promise.all(response);
   },
-  database: (projectId, config) => {
+  Database: (projectId, config) => {
     const response = [];
-    config.database.forEach((db) => {
+    config.Database.forEach((db) => {
       response.push(
         runHygen(projectId, 'database', 'module', { database: db })
       );

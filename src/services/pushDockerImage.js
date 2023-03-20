@@ -1,5 +1,5 @@
-var Docker = require("dockerode");
-var docker = new Docker({ socketPath: "/var/run/docker.sock" });
+var Docker = require('dockerode');
+var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 const pushDockerImage = async (config) => {
   let boilerplates = [];
@@ -37,7 +37,7 @@ const pushDockerImage = async (config) => {
               console.log(data.toString());
             });
 
-            stream.on("end", () => {
+            stream.on('end', () => {
               image.remove({ force: true }, (err) => {
                 if (err) {
                   console.error(`Failed to delete ${username}/${name}: ${err}`);
@@ -60,29 +60,5 @@ const pushDockerImage = async (config) => {
     })
   );
 };
-
-// pushDockerImage({
-//   frontend: [
-//     {
-//       name: "frontend",
-//       username: "preetindersingh",
-//       password: "dckr_pat_seRkvzxj4_UgQRgRRqmkc_XrN7s",
-//       email: "preetindersingh072@gmail.com",
-//       serverAddress: "registry.hub.docker.com",
-//     },
-//   ],
-
-//   backend: [
-//     {
-//       name: "backend",
-//       username: "preetindersingh",
-//       password: "dckr_pat_seRkvzxj4_UgQRgRRqmkc_XrN7s",
-//       email: "preetindersingh072@gmail.com",
-//       serverAddress: "registry.hub.docker.com",
-//     },
-//   ],
-
-//   database: [],
-// });
 
 module.exports = pushDockerImage;
