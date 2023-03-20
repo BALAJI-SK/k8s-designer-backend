@@ -5,11 +5,11 @@ force: true
 export const BACKEND_INFO = {
 <% backends.forEach((backend) => { %>
   <%= backend.name %>: {
-    BACKEND_URL: '<%= backend.url %>:<%= backend.port %>',
+    BACKEND_URL: '/<%= backend.name %>',
     PING_BACKEND: {
-      baseURL: '<%= backend.url %>:<%= backend.port %>',
-      url: '',
-      method: 'ping',
+      baseURL: '/<%= backend.name %>',
+      url: 'api/ping',
+      method: 'get',
     },
   },
 <% }) %>

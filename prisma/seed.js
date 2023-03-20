@@ -7,6 +7,8 @@ async function main() {
     create: {
       fullName: 'Alice',
       email: 'alice@prisma.io',
+      password: 'abcd',
+      salt: '1234',
     },
   });
 
@@ -16,6 +18,8 @@ async function main() {
     create: {
       fullName: 'bob',
       email: 'bob@prisma.io',
+      password: 'abcd',
+      salt: '1234',
     },
   });
   console.log({ alice, bob });

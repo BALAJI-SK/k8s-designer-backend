@@ -21,7 +21,7 @@ force: true
     "sequelize:<%= database.dbName %>:seed:all": "sequelize --options-path ./.sequelize-<%= database.dbName %> --env <%= database.dbName %> db:seed:all",
     <%_ }) _%>
     <%_ if(databases.length > 0) { _%>
-    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.dbName %>:create && npm run sequelize:<%= database.dbName %>:migrate && npm run sequelize:<%= database.dbName %>:seed:all && <% }) %> npm run nodemon",
+    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.dbName %>:migrate && npm run sequelize:<%= database.dbName %>:seed:all && <% }) %> npm run nodemon",
     <%_ } _%>
     "nodemon": "nodemon index.js"
   },

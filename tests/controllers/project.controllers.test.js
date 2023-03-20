@@ -1,7 +1,7 @@
 // const services = require('../src/services/microservices.config.service');
 const ProjectService = require('../../src/services/project.service');
 const controller = require('../../src/controllers/project.controller');
-
+const jwt = require('jsonwebtoken');
 
 // jest.mock('../../src/services/microservices.config.service');
 
@@ -9,6 +9,7 @@ describe('microservices controller testing', () => {
   it('should populate microservice table ', async () => {
    
     jest.spyOn(ProjectService, 'generateProject').mockResolvedValue('path/to/zip/file');
+    jest.spyOn(jwt, 'verify').mockResolvedValue({id: '1234'});
     const mockreq = {body:{'services':[
       {
         'service_type': 'FrontEnd',
@@ -23,7 +24,10 @@ describe('microservices controller testing', () => {
           'value':'2345'
         }
       }
-    ]}};
+    ]},
+    headers:{
+      'authorization': 'Bearer token'
+    }};
     const mockres = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -37,6 +41,7 @@ describe('microservices controller testing', () => {
   it('should return error when service throw error ', async () => {
    
     jest.spyOn(ProjectService, 'generateProject').mockRejectedValue(new Error('error'));    
+    jest.spyOn(jwt, 'verify').mockResolvedValue({id: '1234'});
     const mockreq = {body:{'services':[
       {
         'service_type': 'FrontEnd',
@@ -51,7 +56,11 @@ describe('microservices controller testing', () => {
           'value':'2345'
         }
       }
-    ]}};
+    ]},
+    headers:{
+      'authorization': 'Bearer token'
+    }
+    };
     const mockres = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),

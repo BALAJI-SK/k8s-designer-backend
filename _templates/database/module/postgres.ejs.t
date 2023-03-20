@@ -7,6 +7,7 @@ FROM postgres:<%= dbVersion %>
 
 ENV POSTGRES_USER <%= dbUser %>
 ENV POSTGRES_PASSWORD <%= dbPassword %>
+ENV POSTGRES_DB <%= dbName %>
 
 EXPOSE <%= dbContainerPort %>
 
