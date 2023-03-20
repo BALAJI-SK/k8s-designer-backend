@@ -29,11 +29,9 @@ describe(('generateBoilerplateService'), () => {
       ],
       backends : [{
         name: 'backend1',
-        url: 'http://localhost',
         port: 5500,
       },{
         name: 'backend2',
-        url: 'http://notlocalhost',
         port: 6600,
       }]
     }],
@@ -76,11 +74,9 @@ describe(('generateBoilerplateService'), () => {
       ],
       frontends : [{
         name: 'frontend1',
-        url: 'http://localhost',
         port: 4005,
       },{
         name: 'frontend2',
-        url: 'http://notlocalhost',
         port: 5005,
       }],
       databases : [{

@@ -1,36 +1,51 @@
+const { MODELS } = require('../constants/generator.constants');
 
 
-const getConfigurations = (data) => {
-  console.log(data);
+const getConfigurations = (services) => {
   const config = {
-    auth: {
-      username: 'vk2000',
-      email: 'v***@gmail.com',
-      serverAddress: 'https://registry.hub.docker.com/v2/',
-      password: '********',
-    },
-    frontend: [{
-      name: 'testfrontend',
-      containerPort: 4005,
-      hostPort: 4005,
-      image: 'vk2000/testfrontend',
-      envVariables: [
-        {
-          name: 'key1',
-          value: 'value1',
-        },
-        {
-          name: 'key2',
-          value: 'value2',
-        },
-        {
-          name: 'key3',
-          value: 'value3',
-        }
-      ],
-      backends : []
-    }],
+    FrontEnd: [],
+    BackEnd: [],
+    Database: [],
   };
+  services.forEach((service) => {
+    const envVariables = Object.keys(service['customEnv']).map((key) => ({
+      name: key,
+      value: service['customEnv'][key],
+    }));
+    const serviceConfig = {
+      ...service['configurations'],
+      envVariables,
+      ...service['imageRepository'],
+    };
+    if(service['service_type'] === 'FrontEnd'){
+      serviceConfig['backends'] = service['connected_service'].map((backendName) => {
+        const connectedBackend = services.find((service) => service['service_type'] === 'BackEnd' && service['configurations']['name'] === backendName);
+        return {
+          name: connectedBackend['configurations']['name'],
+          port: connectedBackend['configurations']['port'],
+        };
+      });
+    }
+    else if(service['service_type'] === 'BackEnd'){
+      service['connected_service'].forEach((serviceName, index) => {
+        const connectedService = services.find((service) => service['configurations']['name'] === serviceName);
+        if(connectedService['service_type'] === 'Database'){
+          serviceConfig['databases'] = {
+            ...connectedService['configurations'],
+            model: MODELS[index]
+          };
+        }
+        else if(connectedService['service_type'] === 'FrontEnd'){
+          serviceConfig['frontends'] = {
+            name: connectedService['configurations']['name'],
+            port: connectedService['configurations']['port'],
+          };
+        }
+      });
+        
+    }
+    config[service['service_type']].push(serviceConfig);
+  });
   return config;
 };
 

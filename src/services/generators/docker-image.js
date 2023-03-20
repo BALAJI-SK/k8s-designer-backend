@@ -1,7 +1,7 @@
-var Docker = require("dockerode");
-var docker = new Docker({ socketPath: "/var/run/docker.sock" });
-const path = require("path");
-const { OUTPUT_PATH } = require("../../constants/app.constants");
+var Docker = require('dockerode');
+var docker = new Docker({ socketPath: '/var/run/docker.sock' });
+const path = require('path');
+const { OUTPUT_PATH } = require('../../constants/app.constants');
 
 const generateDockerImage = async (projectId, config) => {
   const projectDir = path.join(OUTPUT_PATH, projectId.toString());
@@ -52,23 +52,5 @@ const generateDockerImage = async (projectId, config) => {
     })
   );
 };
-
-// generateDockerImage(1, {
-//   frontend: [
-//     {
-//       name: "frontend",
-//       username: "preetindersingh",
-//     },
-//   ],
-
-//   backend: [
-//     {
-//       name: "backend",
-//       username: "preetindersingh",
-//     },
-//   ],
-
-//   database: [],
-// });
 
 module.exports = generateDockerImage;
