@@ -12,10 +12,10 @@ const path = require('path');
 const { zipFolder } = require('./zipping.service');
 
 const generateProject = async (data) =>{
-  const {services} = data;
+  const {services, userId} = data;
   const projectResult = await projectRepository.create(
       
-    {userId:'de7405f2-f2b5-4c8d-95f9-7c8beb3e5023'}
+    {userId}
         
   );
   const projectId =  projectResult.id;
@@ -43,7 +43,7 @@ const generateProject = async (data) =>{
   await zipFolder(folderPath, zipPath);
   console.log('Zip generated');
 
-  return zipPath;
+  return zipPath; 
   
 };
 
