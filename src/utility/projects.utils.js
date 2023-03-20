@@ -27,7 +27,7 @@ const repositoryServiceObj = {
       
     );
     const serviceId= projectServiceConfigResult.id;
-        
+    
     await frontendServiceRepository.create(
       
       {
@@ -43,6 +43,8 @@ const repositoryServiceObj = {
       {
         imageRepositoryUrl:imageRepository.repositoryImageAddress,
         imageRepositoryToken:imageRepository.token,
+        email: imageRepository.email,
+        username: imageRepository.username,
         serviceId:serviceId,
       });
 
@@ -92,6 +94,8 @@ const repositoryServiceObj = {
       {
         imageRepositoryUrl:imageRepository.repositoryImageAddress,
         imageRepositoryToken:imageRepository.token,
+        email: imageRepository.email,
+        username: imageRepository.username,
         serviceId:serviceId,
       });
 
@@ -139,6 +143,8 @@ const repositoryServiceObj = {
       {
         imageRepositoryUrl:imageRepository.repositoryImageAddress,
         imageRepositoryToken:imageRepository.token,
+        email: imageRepository.email,
+        username: imageRepository.username,
         serviceId:serviceId,
       });
       
