@@ -16,7 +16,7 @@ model user {
   id       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   fullName String   @map("full_name")
   email    String   @unique @map("email")
-  password String   @map("password") @default(dbgenerated("gen_random_bytes(64)"))
+  password String   @map("password") 
   salt     String   @map("salt")
   Project  project[]
 
@@ -69,12 +69,11 @@ model backendService {
 }
 model databaseService {
   id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String                @map("database_name")
+  dbUser               String                @map("db_user") 
+  dbPassword           String                @map("db_password")
   port                 String                @map("port")
   numberOfReplicas     Int                   @map("number_of_replicas")
-  defaultUser          String                @map("default_user")
-  defaultUserPassword  String                @map("default_user_password")
-  rootUserPassword     String                @map("root_user_password")
-  nameOfDatabaseToBeCreated         String                @map("database_name")
   schemaName           String                @map("schema_name") @default("public")
   projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
   serviceId            String                @map("service_id") @db.Uuid  @default(dbgenerated("gen_random_uuid()"))
@@ -93,6 +92,8 @@ model envVariables {
 
 model imageRepository{
   id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username            String                @map("username")
+  email               String                @map("email") 
   imageRepositoryUrl  String                @map("image_repository_url")
   imageRepositoryToken String               @map("image_repository_token")
   projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
