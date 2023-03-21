@@ -31,7 +31,7 @@ const repositoryServiceObj = {
     await frontendServiceRepository.create(
       
       {
-        numberOfReplicas:configurations.numberOfReplicas, 
+        numberOfReplicas:Number(configurations.numberOfReplicas), 
         name:configurations.name, 
         port:configurations.port,
         serviceId:serviceId
@@ -82,7 +82,7 @@ const repositoryServiceObj = {
     await backendServiceRepository.create(
       
       {
-        numberOfReplicas:configurations.numberOfReplicas, 
+        numberOfReplicas:Number(configurations.numberOfReplicas),
         name:configurations.name, 
         port:configurations.port,
         serviceId:serviceId
@@ -134,6 +134,7 @@ const repositoryServiceObj = {
     await databaseServiceRepository.create(
       {
         ...configurations,
+        numberOfReplicas:Number(configurations.numberOfReplicas),
         serviceId:serviceId
       }
       

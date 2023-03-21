@@ -7,6 +7,7 @@ const generateProjectController = async (req,res)=>{
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
     req.body.userId = decoded.id;
     const zipPath = await ProjectService.generateProject(req.body);
+    res.set('Content-Type', 'application/zip');
     res.status(200).download(zipPath);
   }catch (err) {
     console.log(err);
