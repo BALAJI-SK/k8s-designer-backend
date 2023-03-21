@@ -14,5 +14,24 @@ const create= async (data)=>{
  
 };
 
+const getImageRepo = async (serviceId)=>{
+  try{
+    const services = await prisma.imageRepository.findMany({
+      select:{
+        imageRepositoryUrl:true,
+        username:true,
+        email:true,
+        imageRepositoryToken: true,
+      },
+      where:{
+        serviceId
+      },
+    });
+    return services;
+  }catch(e){
+    console.log(e);
+    throw new Error('Error getting services: ',{cause:e});
+  }
+};
 
-module.exports = {create}; 
+module.exports = {create, getImageRepo}; 
