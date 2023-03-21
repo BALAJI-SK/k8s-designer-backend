@@ -35,13 +35,16 @@ const generateProject = async (data) =>{
   await dockerComposeGenerator(projectId, configurations);
   console.log('Docker compose generated');
 
-  generateDockerImage(projectId, configurations).then(() => {
-    console.log('Docker image generated');
-    pushDockerImage(configurations);
-  });
-  
   await k8sManifestGenerator(projectId);
   console.log('K8s manifest generated');
+  
+  generateDockerImage(projectId, configurations).then(() => {
+    console.log('Docker image generated');
+    pushDockerImage(configurations).then(() => {
+      console.log('Docker image pushed');
+    });
+  });
+  
   
   const folderPath = path.join(OUTPUT_PATH, projectId.toString());
   const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);

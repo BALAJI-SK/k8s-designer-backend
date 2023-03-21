@@ -9,9 +9,9 @@ const pushDockerImage = async (config) => {
       boilerplates.push({
         name: instance.name,
         username: instance.username,
-        password: instance.password,
+        password: instance.token,
         email: instance.email,
-        serverAddress: instance.serverAddress,
+        serverAddress: instance.repositoryImageAddress,
       });
     });
   });
@@ -38,13 +38,13 @@ const pushDockerImage = async (config) => {
             });
 
             stream.on('end', () => {
-              image.remove({ force: true }, (err) => {
-                if (err) {
-                  console.error(`Failed to delete ${username}/${name}: ${err}`);
-                } else {
-                  console.log(`Deleted ${username}/${name}`);
-                }
-              });
+              // image.remove({ force: true }, (err) => {
+              //   if (err) {
+              //     console.error(`Failed to delete ${username}/${name}: ${err}`);
+              //   } else {
+              //     console.log(`Deleted ${username}/${name}`);
+              //   }
+              // });
 
               resolve();
             });

@@ -4,8 +4,11 @@ force: true
 ---
 FROM node:alpine AS builder
 WORKDIR /app
+COPY package.json .
+RUN npm install
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
+
 
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html

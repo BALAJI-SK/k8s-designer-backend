@@ -16,14 +16,19 @@ const getConfigurations = (services) => {
       ...service['configurations'],
       envVariables,
       ...service['imageRepository'],
+      image: service['imageRepository']['username'] + '/' + service['configurations']['name'],
     };
     if(service['service_type'] === 'FrontEnd'){
-      serviceConfig['backends'] = service['connected_service'].map((backendName) => {
-        const connectedBackend = services.find((service) => service['service_type'] === 'BackEnd' && service['configurations']['name'] === backendName);
-        return {
-          name: connectedBackend['configurations']['name'],
-          port: connectedBackend['configurations']['port'],
-        };
+      serviceConfig['backends'] = [];
+      service['connected_service'].forEach((serviceName) => {
+        const connectedService = services.find((service) =>service['configurations']['name'] === serviceName);
+        if(!connectedService || connectedService['service_type'] !== 'BackEnd'){
+          throw new Error('Invalid service connection');
+        }
+        serviceConfig['backends'].push({
+          name: connectedService['configurations']['name'],
+          port: connectedService['configurations']['port'],
+        });
       });
     }
     else if(service['service_type'] === 'BackEnd'){
@@ -31,18 +36,23 @@ const getConfigurations = (services) => {
       serviceConfig['frontends'] = [];
       service['connected_service'].forEach((serviceName, index) => {
         const connectedService = services.find((service) => service['configurations']['name'] === serviceName);
+        if(!connectedService || (connectedService['service_type'] !== 'Database' && connectedService['service_type'] !== 'FrontEnd')){
+          throw new Error('Invalid service connection');
+        }
         if(connectedService['service_type'] === 'Database'){
           serviceConfig['databases'].push({
             ...connectedService['configurations'],
+            dbHost: connectedService['configurations']['name'],
             model: MODELS[index]
           });
         }
-        else if(connectedService['service_type'] === 'FrontEnd'){
+        else{
           serviceConfig['frontends'].push({
             name: connectedService['configurations']['name'],
             port: connectedService['configurations']['port'],
           });
         }
+
       });
         
     }
