@@ -10,6 +10,12 @@ const pushDockerImage = require('./pushDockerImage');
 const { OUTPUT_PATH } = require('../constants/app.constants');
 const path = require('path');
 const { zipFolder } = require('./zipping.service');
+const projectServiceConfig = require('../repositories/projectServiceConfig.repositories');
+const frontendService = require('../repositories/frontendService.repositories');
+const backendService = require('../repositories/backendService.repositories');
+const databaseService = require('../repositories/databaseService.repositories');
+const envVariables= require('../repositories/envVariables.repositories');
+const imageService = require('../repositories/imageService.repositories');
 
 const generateProject = async (data) =>{
   const {services, userId} = data;
@@ -47,4 +53,60 @@ const generateProject = async (data) =>{
   
 };
 
-module.exports = {generateProject};
+const getLatestProject = async (userId) =>{
+  const project = await projectRepository.getLatestProject(userId);
+  const projectId = project[0].id;
+  // console.log('projectId',project);
+  const services= await projectServiceConfig.getServices(projectId);
+  let result =[];
+  for(let i=0;i<services.length;i++){
+    const service = services[i];
+    const serviceId = service.id;
+    const serviceType = service.serviceType;
+    const currentService = {service_type: serviceType};
+    // console.log(temp);
+    if(serviceType === 'FrontEnd'){
+      let temp= await frontendService.getConfigurations(serviceId);
+      const port = temp[0].port;
+      const numberOfReplicas = temp[0].numberOfReplicas;
+      const name= temp[0].name;
+      currentService.configurations = {port,numberOfReplicas,name};
+      // console.log('temp',temp);
+    }else if(serviceType === 'BackEnd'){
+      let temp= await backendService.getConfigurations(serviceId);
+      const port = temp[0].port;
+      const numberOfReplicas = temp[0].numberOfReplicas;
+      const name= temp[0].name;
+      currentService.configurations = {port,numberOfReplicas,name};
+      // console.log('temp',port);
+    }else if(serviceType === 'Database'){
+      let temp= await databaseService.getConfigurations(serviceId);
+      const port = temp[0].port;
+      const numberOfReplicas = temp[0].numberOfReplicas;
+      const name= temp[0].name;
+      const dbUser= temp[0].dbUser;
+      const dbPassword= temp[0].dbPassword;
+      const schemaName= temp[0].schemaName;
+      currentService.configurations = {port,numberOfReplicas,name,dbUser,dbPassword,schemaName};
+      // console.log('temp',temp);
+    }
+    const connectedServices = await envVariables.getConnectedServices(serviceId);
+    let temp=[];
+    for(let j=0;j<connectedServices.length;j++){
+      temp =[...temp,connectedServices[j].field];
+    }
+    currentService.connectedServices = temp;
+    const envVariable = await envVariables.getVariables(serviceId);
+    temp = {};
+    for(let j=0;j<envVariable.length;j++){
+      temp ={...temp,[envVariable[j].field]:envVariable[j].value};
+    }
+    currentService.customEnv= temp;
+
+    const imageRepo = await imageService.getImageRepo(serviceId);
+    currentService.imageRepository = {repositoryImageAddress: imageRepo[0].imageRepositoryUrl, username: imageRepo[0].username, email: imageRepo[0].email, token: imageRepo[0].imageRepositoryToken};
+    result=[...result,currentService];
+  }
+  return result;
+};
+module.exports = {generateProject, getLatestProject};
