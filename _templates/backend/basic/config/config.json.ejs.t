@@ -7,13 +7,13 @@ module.exports = {
   "development": {
     "databases": {
       <%_ databases.forEach((database, index) => { _%>
-    "<%= database.dbName %>": {
+    "<%= database.name %>": {
       "username": "<%= database.dbUser %>",
       "password": "<%= database.dbPassword %>",
-      "database": "<%= database.dbName %>",
+      "database": "<%= database.name %>",
       "host": "<%= database.dbHost %>",
       "dialect": "postgres",
-      "port": "<%= database.dbPort %>"
+      "port": "5432"
     }<% if(index < databases.length - 1) { %>,<% } %>
     <%_ }) _%>
     }
@@ -21,13 +21,13 @@ module.exports = {
   "test": {
     "databases": {
     <%_ databases.forEach((database, index) => { _%>
-    "<%= database.dbName %>": {
+    "<%= database.name %>": {
       "username": "<%= database.dbUser %>",
       "password": "<%= database.dbPassword %>",
-      "database": "<%= database.dbName %>",
+      "database": "<%= database.name %>",
       "host": "<%= database.dbHost %>",
       "dialect": "postgres",
-      "port": "<%= database.dbPort %>"
+      "port": "5432"
     }<% if(index < databases.length - 1) { %>,<% } %>
     <%_ }) _%>
     }
@@ -35,25 +35,25 @@ module.exports = {
   "production": {
     "databases": {
     <%_ databases.forEach((database, index) => { _%>
-    "<%= database.dbName %>": {
+    "<%= database.name %>": {
       "username": "<%= database.dbUser %>",
       "password": "<%= database.dbPassword %>",
-      "database": "<%= database.dbName %>",
+      "database": "<%= database.name %>",
       "host": "<%= database.dbHost %>",
       "dialect": "postgres",
-      "port": "<%= database.dbPort %>"
+      "port": "5432"
     }<% if(index < databases.length - 1) { %>,<% } %>
     <%_ }) _%>
     }
   },
   <%_ databases.forEach((database, index) => { _%>
-  "<%= database.dbName %>": {
+  "<%= database.name %>": {
     "username": "<%= database.dbUser %>",
     "password": "<%= database.dbPassword %>",
-    "database": "<%= database.dbName %>",
+    "database": "<%= database.name %>",
     "host": "<%= database.dbHost %>",
     "dialect": "postgres",
-    "port": "<%= database.dbPort %>"
+    "port": "5432"
     }<% if(index < databases.length - 1) { %>,<% } %>
   <%_ }) _%>
 }

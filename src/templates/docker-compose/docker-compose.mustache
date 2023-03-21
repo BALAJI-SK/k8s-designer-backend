@@ -1,7 +1,7 @@
 version: '3'
 services:
-{{#database}}
-  {{dbName}}:
+{{#Database}}
+  {{name}}:
     image: {{{image}}}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -15,31 +15,31 @@ services:
       {{name}}: "{{{value}}}"
     {{/envVariables}}
     ports:
-      - "{{dbHostPort}}:{{dbContainerPort}}"
+      - "{{port}}:5432"
     volumes:
-      - {{dbName}}_data:/var/lib/postgresql/data
-{{/database}}
-{{#frontend}}
+      - {{name}}_data:/var/lib/postgresql/data
+{{/Database}}
+{{#FrontEnd}}
 
   {{name}}:
     image: {{{image}}}
     ports:
-      - "{{hostPort}}:80"
+      - "{{port}}:80"
     {{#envVariables.0}}
     environment:
     {{/envVariables.0}}
     {{#envVariables}}
       {{name}}: "{{{value}}}"
     {{/envVariables}}
-{{/frontend}}
-{{#backend}}
+{{/FrontEnd}}
+{{#BackEnd}}
   {{name}}:
     image: {{{image}}}
     ports:
-      - "{{hostPort}}:{{containerPort}}"
+      - "{{port}}:{{port}}"
     depends_on:
       {{#databases}}
-      {{dbName}}:
+      {{name}}:
         condition: service_healthy
       {{/databases}}
     {{#envVariables.0}}
@@ -49,11 +49,11 @@ services:
       {{name}}: "{{{value}}}"
     {{/envVariables}}
 
-{{/backend}}
+{{/BackEnd}}
 
-{{#database.0}}
+{{#Database.0}}
 volumes:
-{{/database.0}}
-  {{#database}}
-  {{dbName}}_data:
-  {{/database}}
+{{/Database.0}}
+  {{#Database}}
+  {{name}}_data:
+  {{/Database}}

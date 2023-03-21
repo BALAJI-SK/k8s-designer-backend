@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= name %>/src/models/<%= database.dbName %>/<%= database.model.name %>.js
+to: <%= outputPath %>/<%= name %>/src/models/<%= database.name %>/<%= database.model.name %>.js
 force: true
 ---
 'use strict';

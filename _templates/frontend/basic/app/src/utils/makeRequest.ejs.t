@@ -5,7 +5,6 @@ force: true
 import axios from 'axios';
 
 const makeRequest = async (apiEndPoint, dynamicConfig) => {
-    # console.log(apiEndPoint);
     const requestDetails = {
         baseURL: apiEndPoint.baseURL,
         url: apiEndPoint.url,

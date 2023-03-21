@@ -1,7 +1,7 @@
-var Docker = require("dockerode");
-var docker = new Docker({ socketPath: "/var/run/docker.sock" });
-const path = require("path");
-const { OUTPUT_PATH } = require("../../constants/app.constants");
+var Docker = require('dockerode');
+var docker = new Docker({ socketPath: '/var/run/docker.sock' });
+const path = require('path');
+const { OUTPUT_PATH } = require('../../constants/app.constants');
 
 const generateDockerImage = async (projectId, config) => {
   const projectDir = path.join(OUTPUT_PATH, projectId.toString());
@@ -11,15 +11,16 @@ const generateDockerImage = async (projectId, config) => {
   Object.values(config).forEach((microservice) => {
     microservice.forEach((instance) => {
       boilerplates.push({
+        image: instance.image,
         name: instance.name,
-        username: instance.username,
       });
     });
   });
+  console.table(boilerplates);
 
   await Promise.all(
     boilerplates.map(async (boilerplate) => {
-      const { name, username } = boilerplate;
+      const { name, image } = boilerplate;
 
       await new Promise((resolve, reject) => {
         const boilerplatePath = path.join(projectDir, name);
@@ -30,14 +31,15 @@ const generateDockerImage = async (projectId, config) => {
               context: boilerplatePath,
               src: ['Dockerfile', '.'],
             },
-            { t: `${username}/${name}` }
+            { t: image }
           )
           .then((stream) => {
             stream.on('data', (data) => {
-              console.log(data.toString());
+              console.log(data['stream']);
             });
 
             stream.on('end', () => {
+              console.error(`Docker image ${image} generated`);
               resolve();
             });
 
@@ -52,23 +54,5 @@ const generateDockerImage = async (projectId, config) => {
     })
   );
 };
-
-// generateDockerImage(1, {
-//   frontend: [
-//     {
-//       name: "frontend",
-//       username: "preetindersingh",
-//     },
-//   ],
-
-//   backend: [
-//     {
-//       name: "backend",
-//       username: "preetindersingh",
-//     },
-//   ],
-
-//   database: [],
-// });
 
 module.exports = generateDockerImage;
