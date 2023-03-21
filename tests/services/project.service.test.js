@@ -11,13 +11,7 @@ const path = require('path');
 
 
 const sampleConfigurations = {
-  auth: {
-    username: 'username',
-    email: 'email',
-    password: 'password',
-    serverAddress: 'serverAddress',
-  },
-  frontend: {
+  FrontEnd: {
     name: 'frontend',
   }
 };
@@ -37,10 +31,10 @@ jest.mock('../../src/services/generators/docker-compose.js', () => {
   return jest.fn();
 });
 jest.mock('../../src/services/generators/docker-image.js', () => {
-  return jest.fn();
+  return jest.fn().mockResolvedValue();
 });
 jest.mock('../../src/services/pushDockerImage.js', () => {
-  return jest.fn();
+  return jest.fn().mockResolvedValue();
 });
 jest.mock('../../src/services/generators/k8s-manifest.js', () => {
   return jest.fn();
@@ -113,8 +107,8 @@ describe('microservices service testing', () => {
 
     expect(generateBoilerplate).toHaveBeenCalledWith(projectId, 'FrontEnd', sampleConfigurations);
     expect(dockerComposeGenerator).toHaveBeenCalledWith(projectId, sampleConfigurations);
-    expect(generateDockerImage).toHaveBeenCalledWith(projectId, 'username');
-    expect(pushDockerImage).toHaveBeenCalledWith(projectId, 'username', 'password', 'email', 'serverAddress');
+    expect(generateDockerImage).toHaveBeenCalledWith(projectId, sampleConfigurations);
+    expect(pushDockerImage).toHaveBeenCalledWith(sampleConfigurations);
     expect(k8sManifestGenerator).toHaveBeenCalledWith(projectId);
     expect(zipFolder).toHaveBeenCalledWith(folderPath, zipPath);
   });

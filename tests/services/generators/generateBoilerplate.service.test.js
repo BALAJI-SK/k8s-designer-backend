@@ -8,7 +8,7 @@ jest.mock('child_process', () => ({
 
 describe(('generateBoilerplateService'), () => {
   const sampleConfig = {
-    frontend: [{
+    FrontEnd: [{
       name: 'testFrontend',
       containerPort: 4005,
       hostPort: 4005,
@@ -35,7 +35,7 @@ describe(('generateBoilerplateService'), () => {
         port: 6600,
       }]
     }],
-    database: [
+    Database: [
       {
         dbName: 'testDb',
         image: 'dockerUsername/testDb',
@@ -57,7 +57,7 @@ describe(('generateBoilerplateService'), () => {
         dbSchema: 'public',
       }
     ],
-    backend: [{
+    BackEnd: [{
       name: 'testBackend',
       image: 'dockerUsername/testBackend',
       containerPort: 5500,
@@ -138,19 +138,19 @@ describe(('generateBoilerplateService'), () => {
     });
     it('should return a rejected promise when an invalid config is passed', async () => {
       const invalidConfig = {
-        database: [
+        Database: [
           {
-            dbName: 'testDb',
+            name: 'testDb',
             dbVersion: 'latest',
-            dbPort: 5432,
+            port: 5432,
             dbUser: 'postgres',
             dbPassword: 'postgres',
             dbSchema: 'public',
           },
           {
-            databaseNam: 'testDb2',
+            nam: 'testDb2',
             dbVersion: 'latest',
-            dbPort: 5432,
+            port: 5432,
             dbUser: 'postgres',
             dbPassword: 'postgres',
             dbSchema: 'public',
@@ -158,20 +158,20 @@ describe(('generateBoilerplateService'), () => {
         ],
       };
       try {
-        await generateBoilerplateService.generateBoilerplate('projectId123', 'database', invalidConfig);
+        await generateBoilerplateService.generateBoilerplate('projectId123', 'Database', invalidConfig);
       }
       catch (e) {
         expect(e).toBe(1);
       }
     });
-    it('should return array of relolved promises when a frontend microservice is passed', async () => {
+    it('should return array of resolved promises when a frontend microservice is passed', async () => {
       mockSpawn = {
         on: jest.fn().mockImplementation((event, callback) => {
           if (event === 'close') {
             callback(0);
           }
         })};
-      const exitCode = await generateBoilerplateService.generateBoilerplate('projectId123', 'frontend', sampleConfig);
+      const exitCode = await generateBoilerplateService.generateBoilerplate('projectId123', 'FrontEnd', sampleConfig);
       expect(exitCode).toEqual([0]);
     });
     it('should return array of relolved promises when backend microservice is passed', async () => {
@@ -181,7 +181,7 @@ describe(('generateBoilerplateService'), () => {
             callback(0);
           }
         })};
-      const exitCode = await generateBoilerplateService.generateBoilerplate('projectId123', 'backend', sampleConfig);
+      const exitCode = await generateBoilerplateService.generateBoilerplate('projectId123', 'BackEnd', sampleConfig);
       expect(exitCode).toEqual([0,0,0]);
     });
     
@@ -192,7 +192,7 @@ describe(('generateBoilerplateService'), () => {
             callback(0);
           }
         })};
-      const response = await generateBoilerplateService.generateBoilerplate('projectId123', 'database', sampleConfig);
+      const response = await generateBoilerplateService.generateBoilerplate('projectId123', 'Database', sampleConfig);
       expect(response).toEqual([0,0]);
         
     });

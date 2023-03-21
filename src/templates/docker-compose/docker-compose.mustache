@@ -15,7 +15,7 @@ services:
       {{name}}: "{{{value}}}"
     {{/envVariables}}
     ports:
-      - "{{port}}:{{port}}"
+      - "{{port}}:5432"
     volumes:
       - {{name}}_data:/var/lib/postgresql/data
 {{/Database}}

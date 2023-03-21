@@ -10,7 +10,7 @@ const generateProjectController = async (req,res)=>{
     res.set('Content-Type', 'application/zip');
     res.status(200).download(zipPath);
   }catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({data:err.message});
   }
 

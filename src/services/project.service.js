@@ -32,8 +32,8 @@ const generateProject = async (data) =>{
   const configurations = getConfigurations(services);
   console.log(configurations);
   let generatorResponses = [];
-  Object.keys(configurations).forEach((key)=>{
-    generatorResponses.push(generateBoilerplate(projectId, key, configurations));
+  Object.keys(configurations).forEach((microservice)=>{
+    generatorResponses.push(generateBoilerplate(projectId, microservice, configurations));
   });
   await Promise.all(generatorResponses);
   console.log('All boilerplates generated');
