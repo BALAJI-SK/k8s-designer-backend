@@ -13,6 +13,18 @@ const create= async (data)=>{
   }
  
 };
+const getServices = async (projectId)=>{
+  try{
+    const services = await prisma.projectServiceConfig.findMany({
+      where:{
+        projectId
+      },
+    });
+    return services;
+  }catch(e){
+    // console.log(e);
+    throw new Error('Error getting services: ',{cause:e});
+  }
+};
 
-
-module.exports = {create}; 
+module.exports = {create, getServices}; 

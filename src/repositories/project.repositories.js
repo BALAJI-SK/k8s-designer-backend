@@ -13,6 +13,23 @@ const create= async (data)=>{
   }
  
 };
+const getLatestProject = async (userId)=>{
+  try{
+    const projectResult = await prisma.project.findMany({
+      where:{
+        userId
+      },
+      orderBy: {
+        timestamp: 'desc',
+      },
+      take: 1,
+    });
+    return projectResult;
+  }catch(e){
+    console.log(e);
+    throw new Error('Error getting latest project: ',{cause:e});
+  }
+};
 
 
-module.exports = {create}; 
+module.exports = {create, getLatestProject}; 

@@ -12,5 +12,17 @@ const create= async (data)=>{
  
 };
 
+const getConfigurations = async (serviceId)=>{
+  try{
+    const services = await prisma.databaseService.findMany({
+      where:{
+        serviceId
+      },
+    });
+    return services;
+  }catch(e){
+    throw new Error('Error getting services: ',{cause:e});
+  }
+};
 
-module.exports = {create}; 
+module.exports = {create, getConfigurations}; 
