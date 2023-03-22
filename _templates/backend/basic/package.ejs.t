@@ -15,13 +15,13 @@ force: true
     <%_ } _%>
     "lint": "npx eslint --fix .",
     <%_ databases.forEach((database) => { _%>
-    "sequelize:<%= database.dbName %>:create": "sequelize --options-path ./.sequelize-<%= database.dbName %> --env <%= database.dbName %> db:create",
-    "sequelize:<%= database.dbName %>:migrate": "sequelize --options-path ./.sequelize-<%= database.dbName %> --env <%= database.dbName %> db:migrate",
-    "sequelize:<%= database.dbName %>:migrate:undo": "sequelize --options-path ./.sequelize-<%= database.dbName %> --env <%= database.dbName %> db:migrate:undo",
-    "sequelize:<%= database.dbName %>:seed:all": "sequelize --options-path ./.sequelize-<%= database.dbName %> --env <%= database.dbName %> db:seed:all",
+    "sequelize:<%= database.name %>:create": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:create",
+    "sequelize:<%= database.name %>:migrate": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:migrate",
+    "sequelize:<%= database.name %>:migrate:undo": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:migrate:undo",
+    "sequelize:<%= database.name %>:seed:all": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:seed:all",
     <%_ }) _%>
     <%_ if(databases.length > 0) { _%>
-    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.dbName %>:migrate && npm run sequelize:<%= database.dbName %>:seed:all && <% }) %> npm run nodemon",
+    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.name %>:migrate && npm run sequelize:<%= database.name %>:seed:all && <% }) %> npm run nodemon",
     <%_ } _%>
     "nodemon": "nodemon index.js"
   },

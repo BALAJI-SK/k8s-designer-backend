@@ -1,6 +1,6 @@
-const Docker = require("dockerode");
-const docker = new Docker({ socketPath: "/var/run/docker.sock" });
-const generateDockerImage = require("../../../src/services/generators/docker-image");
+const Docker = require('dockerode');
+const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+const generateDockerImage = require('../../../src/services/generators/docker-image');
 
 jest.mock('dockerode', () => {
   const mockStream = {
@@ -25,25 +25,25 @@ jest.mock('dockerode', () => {
 const projectId = 1;
 
 const config = {
-  frontend: [
+  FrontEnd: [
     {
-      name: "frontend",
-      username: "test",
+      name: 'frontend',
+      image: 'test/frontend',
     },
   ],
 
-  backend: [
+  BackEnd: [
     {
-      name: "backend",
-      username: "test",
+      name: 'backend',
+      image: 'test/backend',
     },
   ],
 
-  database: [],
+  Database: [],
 };
 
-describe("generateDockerImage", () => {
-  it("should generate a docker image successfully", async () => {
+describe('generateDockerImage', () => {
+  it('should generate a docker image successfully', async () => {
     await generateDockerImage(projectId, config);
 
     expect(docker.buildImage).toHaveBeenCalledWith(
@@ -51,7 +51,7 @@ describe("generateDockerImage", () => {
         context: expect.any(String),
         src: ['Dockerfile', '.'],
       },
-      { t: "test/frontend" }
+      { t: 'test/frontend' }
     );
 
     expect(docker.buildImage).toHaveBeenCalledWith(
@@ -59,7 +59,7 @@ describe("generateDockerImage", () => {
         context: expect.any(String),
         src: ['Dockerfile', '.'],
       },
-      { t: "test/backend" }
+      { t: 'test/backend' }
     );
   });
 
@@ -69,7 +69,7 @@ describe("generateDockerImage", () => {
     });
 
     await expect(generateDockerImage(projectId, config)).rejects.toThrow(
-      "Error while generating image"
+      'Error while generating image'
     );
   });
 });

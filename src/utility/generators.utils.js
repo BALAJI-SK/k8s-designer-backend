@@ -1,110 +1,64 @@
+const { MODELS } = require('../constants/generator.constants');
 
 
-const getConfigurations = (data) => {
-  console.log(data);
-  const sampleConfig = {
-    auth: {
-      username: 'vk2000',
-      email: 'var***@gmail.com',
-      serverAddress: 'https://registry.hub.docker.com/v2/',
-      password: 'dckr_p****',
-    },
-    frontend: [{
-      name: 'testfrontend',
-      containerPort: 4005,
-      hostPort: 4005,
-      image: 'vk2000/testfrontend',
-      envVariables: [
-        {
-          name: 'key1',
-          value: 'value1',
-        },
-        {
-          name: 'key2',
-          value: 'value2',
-        },
-        {
-          name: 'key3',
-          value: 'value3',
-        }
-      ],
-      backends : [{
-        name: 'testbackend',
-        url: 'http://testbackend',
-        port: 5500,
-      }]
-    }],
-    database: [
-      {
-        dbName: 'testdb',
-        image: 'vk2000/testdb',
-        dbVersion: 'latest',
-        dbContainerPort: 5432,
-        dbHostPort: 5433,
-        dbUser: 'postgres',
-        dbPassword: 'postgres',
-        dbSchema: 'public',
-      },
-      {
-        dbName: 'testdb2',
-        image: 'vk2000/testdb2',
-        dbVersion: 'latest',
-        dbContainerPort: 5432,
-        dbHostPort: 5434,
-        dbUser: 'postgres',
-        dbPassword: 'postgres',
-        dbSchema: 'public',
-      }
-    ],
-    backend: [{
-      name: 'testbackend',
-      image: 'vk2000/testbackend',
-      containerPort: 5500,
-      hostPort: 5500,
-      envVariables: [
-        {
-          name: 'key1',
-          value: 'value1',
-        },
-        {
-          name: 'key2',
-          value: 'value2',
-        },
-      ],
-      frontends : [{
-        name: 'testfrontend',
-        url: 'http://testfrontend',
-        port: 4005,
-      }],
-      databases : [{
-        dbName: 'testdb',
-        dbHost: 'testdb',
-        dbPort: 5432,
-        dbUser: 'postgres',
-        dbPassword: 'postgres',
-        model: {
-          name: 'Color',
-          tableName: 'Colors',
-          data: ['red', 'green', 'blue']
-        }
-      },
-      {
-        dbName: 'testdb2',
-        dbHost: 'testdb2',
-        dbPort: 5432,
-        dbUser: 'postgres',
-        dbPassword: 'postgres',
-        model: {
-          name: 'Country',
-          tableName: 'Countries',
-          data: ['India', 'USA', 'UK']
-        }
-      }
-      ]
-    }]
+const getConfigurations = (services) => {
+  const config = {
+    FrontEnd: [],
+    BackEnd: [],
+    Database: [],
   };
-  
-  return sampleConfig;
+  services.forEach((service) => {
+    const envVariables = Object.keys(service['customEnv']).map((key) => ({
+      name: key,
+      value: service['customEnv'][key],
+    }));
+    const serviceConfig = {
+      ...service['configurations'],
+      envVariables,
+      ...service['imageRepository'],
+      image: service['imageRepository']['username'] + '/' + service['configurations']['name'],
+    };
+    if(service['service_type'] === 'FrontEnd'){
+      serviceConfig['backends'] = [];
+      service['connected_service'].forEach((serviceName) => {
+        const connectedService = services.find((service) =>service['configurations']['name'] === serviceName);
+        if(!connectedService || connectedService['service_type'] !== 'BackEnd'){
+          throw new Error('Invalid service connection');
+        }
+        serviceConfig['backends'].push({
+          name: connectedService['configurations']['name'],
+          port: connectedService['configurations']['port'],
+        });
+      });
+    }
+    else if(service['service_type'] === 'BackEnd'){
+      serviceConfig['databases'] = [];
+      serviceConfig['frontends'] = [];
+      service['connected_service'].forEach((serviceName, index) => {
+        const connectedService = services.find((service) => service['configurations']['name'] === serviceName);
+        if(!connectedService || (connectedService['service_type'] !== 'Database' && connectedService['service_type'] !== 'FrontEnd')){
+          throw new Error('Invalid service connection');
+        }
+        if(connectedService['service_type'] === 'Database'){
+          serviceConfig['databases'].push({
+            ...connectedService['configurations'],
+            dbHost: connectedService['configurations']['name'],
+            model: MODELS[index]
+          });
+        }
+        else{
+          serviceConfig['frontends'].push({
+            name: connectedService['configurations']['name'],
+            port: connectedService['configurations']['port'],
+          });
+        }
+
+      });
+        
+    }
+    config[service['service_type']].push(serviceConfig);
+  });
+  return config;
 };
 
 module.exports = { getConfigurations };

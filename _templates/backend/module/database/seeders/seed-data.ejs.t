@@ -1,5 +1,5 @@
 ---
-to: <%= outputPath %>/<%= name %>/database/seeders/<%= database.dbName %>/seed-data.js
+to: <%= outputPath %>/<%= name %>/database/seeders/<%= database.name %>/seed-data.js
 force: true
 ---
 /* eslint-disable no-unused-vars */

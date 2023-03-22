@@ -1,18 +1,8 @@
-const data = require('../../input.json');
 const httpError = require('../exceptions/user.exception');
 const userRepositoryService = require('../repositories/user.repositories');
 const passwordUtil = require('../utility/password.util');
 const jwtUtil = require('../utility/jwt.util');
 
-const getOrderData = () => data.log;
-
-const getCustomerData = customerId => {
-  return data.log.filter((record) => {
-    if (record.customerId == customerId) {
-      return record;
-    }
-  });
-};
 
 const createUser = async (name, email, password) => {
   const { hashpassword, salt } = await passwordUtil.hashPassword(password);
@@ -47,4 +37,4 @@ const validateUser = async (token) => {
   return { message: 'Authorize User' };
 };
 
-module.exports = { getOrderData, getCustomerData , createUser, loginUser, validateUser };
+module.exports = { createUser, loginUser, validateUser };

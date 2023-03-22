@@ -33,6 +33,7 @@ describe('microservices controller testing', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
       download: jest.fn(),
+      set: jest.fn()
     };
     await controller.generateProjectController(mockreq, mockres);
     expect(mockres.status).toHaveBeenCalledWith(200);

@@ -8,21 +8,12 @@ const k8sManifestGenerator = require('../../src/services/generators/k8s-manifest
 const { zipFolder } = require('../../src/services/zipping.service.js');
 const { OUTPUT_PATH } = require('../../src/constants/app.constants.js');
 const path = require('path');
-
-
 const sampleConfigurations = {
-  auth: {
-    username: 'username',
-    email: 'email',
-    password: 'password',
-    serverAddress: 'serverAddress',
-  },
-  frontend: {
+  FrontEnd: {
     name: 'frontend',
   }
 };
 const projectId = 1;
-
 jest.mock('../../src/utility/generators.utils.js', () => {
   return {
     getConfigurations: jest.fn().mockReturnValue(sampleConfigurations),
@@ -37,10 +28,10 @@ jest.mock('../../src/services/generators/docker-compose.js', () => {
   return jest.fn();
 });
 jest.mock('../../src/services/generators/docker-image.js', () => {
-  return jest.fn();
+  return jest.fn().mockResolvedValue();
 });
 jest.mock('../../src/services/pushDockerImage.js', () => {
-  return jest.fn();
+  return jest.fn().mockResolvedValue();
 });
 jest.mock('../../src/services/generators/k8s-manifest.js', () => {
   return jest.fn();
@@ -51,26 +42,18 @@ jest.mock('../../src/services/zipping.service.js', () => {
   };
 });
 const repositoryServiceObj = require('../../src/utility/projects.utils.js');
-// const { it } = require('node:test');
-
 describe('microservices service testing', () => {
   it('should populate microservice table ', async () => {
-
-  
     jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
       'id':projectId,
       'userId':4
     });
-
-
-   
     jest.spyOn(repositoryServiceObj,'FrontEnd').mockResolvedValueOnce({
       'id':3,
     });
     jest.spyOn(repositoryServiceObj,'BackEnd').mockResolvedValueOnce({
       'id':4,
     });
-
     const mockreq = {body:{'services':[
       {
         'service_type': 'FrontEnd',
@@ -104,23 +87,23 @@ describe('microservices service testing', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-
     const result = await services.generateProject(mockreq.body);
     expect(result).toEqual(path.join(OUTPUT_PATH, `${projectId}.zip`));
   });
   it('should call the generators with correct parameters', async () => {
     const folderPath = path.join(OUTPUT_PATH, projectId.toString());
     const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);
-
     expect(generateBoilerplate).toHaveBeenCalledWith(projectId, 'FrontEnd', sampleConfigurations);
     expect(dockerComposeGenerator).toHaveBeenCalledWith(projectId, sampleConfigurations);
-    expect(generateDockerImage).toHaveBeenCalledWith(projectId, 'username');
-    expect(pushDockerImage).toHaveBeenCalledWith(projectId, 'username', 'password', 'email', 'serverAddress');
+    expect(generateDockerImage).toHaveBeenCalledWith(projectId, sampleConfigurations);
+    expect(pushDockerImage).toHaveBeenCalledWith(sampleConfigurations);
     expect(k8sManifestGenerator).toHaveBeenCalledWith(projectId);
     expect(zipFolder).toHaveBeenCalledWith(folderPath, zipPath);
   });
-  
 });
+
+
+
 
 const projectServiceConfig = require('../../src/repositories/projectServiceConfig.repositories');
 const frontendService = require('../../src/repositories/frontendService.repositories');
