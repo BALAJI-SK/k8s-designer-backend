@@ -17,9 +17,7 @@ const zipFolder = (folderPath, outputPath) => {
 
         archive.pipe(output);
         archive.directory(resolvedFolderPath, folderName);
-        console.log('below directory');
         archive.finalize();
-        console.log('below finalize');
         
         output.on('close', () => {
           resolve(outputFilePath);
