@@ -9,34 +9,33 @@ const { generateBoilerplate } = require('../src/services/generators/generateBoil
 const k8sManifestGenerator = require('../src/services/generators/k8s-manifest');
 const pushDockerImage = require('../src/services/pushDockerImage');
 const { getConfigurations } = require('../src/utility/generators.utils');
-const [ , , filepath ] = process.argv;
-const serviceDataPath = resolve(process.cwd(), filepath);
 const fs = require('fs-extra');
 
-console.log('this is path: ', serviceDataPath);
 
+const [ , , filepath ] = process.argv;
+const serviceDataPath = resolve(process.cwd(), filepath);
+console.log('serviceDataPath: ', serviceDataPath);
 const services = require(serviceDataPath);
 
-const getZip = async (services) => {
-  const projectId = filepath.split('/')[1].split('.')[0];
-  const boilerplatesPath = path.resolve(process.cwd(), projectId.toString());
-  const folderPath = path.join(OUTPUT_PATH, projectId.toString());
+const getBoilerplates = async (services) => {
+  const projectName = serviceDataPath.split('/').pop().split('.')[0];
+  const boilerplatesPath = path.resolve(process.cwd(), projectName.toString());
+  const folderPath = path.join(OUTPUT_PATH, projectName.toString());
   const configurations = getConfigurations(services);
-  console.log(configurations);
   let generatorResponses = [];
   Object.keys(configurations).forEach((microservice)=>{
-    generatorResponses.push(generateBoilerplate(projectId, microservice, configurations));
+    generatorResponses.push(generateBoilerplate(projectName, microservice, configurations));
   });
   await Promise.all(generatorResponses);
   console.log('All boilerplates generated');
     
-  await dockerComposeGenerator(projectId, configurations);
+  await dockerComposeGenerator(projectName, configurations);
   console.log('Docker compose generated');
     
-  await k8sManifestGenerator(projectId);
+  await k8sManifestGenerator(projectName);
   console.log('K8s manifest generated');
       
-  generateDockerImage(projectId, configurations).then(() => {
+  generateDockerImage(projectName, configurations).then(() => {
     console.log('Docker image generated');
     pushDockerImage(configurations).then(() => {
       console.log('Docker image pushed');
@@ -49,7 +48,7 @@ const getZip = async (services) => {
   });
 };
 
-getZip(services).then(() => {
+getBoilerplates(services).then(() => {
   console.log('Done');
 }).catch((err) => {
   console.log('Error: ', err);
