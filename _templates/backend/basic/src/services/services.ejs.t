@@ -14,9 +14,9 @@ const {<%= db.model.name %>} = require('../models');
 <%_ }) _%>
 
 const getDetails = async () => {
-  const response = {};
+  const response = [];
   <%_ databases.forEach((db, i) => { _%>
-  response[<%= i %>] = await <%= db.model.name %>.findAll();
+  response.push(await <%= db.model.name %>.findAll());
   <%_ }) _%>
   return response;
 };
