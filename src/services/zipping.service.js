@@ -18,7 +18,7 @@ const zipFolder = (folderPath, outputPath) => {
         archive.pipe(output);
         archive.directory(resolvedFolderPath, folderName);
         archive.finalize();
-
+        
         output.on('close', () => {
           resolve(outputFilePath);
         });

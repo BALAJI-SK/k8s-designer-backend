@@ -4,7 +4,8 @@ force: true
 ---
 .header {
     background-color: #222;
-    height: 150px;
     padding: 20px;
     color: white;
+    text-align: start;
+    font-size: 1.5em;
 }
