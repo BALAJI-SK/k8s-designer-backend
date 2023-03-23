@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('path');
+const cli = require('cli');
 const { resolve } = require('path');
 const { OUTPUT_PATH } = require('../src/constants/app.constants');
 const dockerComposeGenerator = require('../src/services/generators/docker-compose');
@@ -10,15 +11,20 @@ const k8sManifestGenerator = require('../src/services/generators/k8s-manifest');
 const pushDockerImage = require('../src/services/pushDockerImage');
 const { getConfigurations } = require('../src/utility/generators.utils');
 const fs = require('fs-extra');
+const Spinner = require('cli-spinner').Spinner;
 
 
-const [ , , filepath ] = process.argv;
+cli.parse({
+  filepath: ['f', 'File path of the microservices configurations', 'string', ''],
+  projectName: ['p', 'Name of the folder to be generated', 'string', 'project'],
+});
+const options = cli.parse();
+const { filepath } = options;
+const { projectName } = options;
 const serviceDataPath = resolve(process.cwd(), filepath);
-console.log('serviceDataPath: ', serviceDataPath);
 const services = require(serviceDataPath);
 
 const getBoilerplates = async (services) => {
-  const projectName = serviceDataPath.split('/').pop().split('.')[0];
   const boilerplatesPath = path.resolve(process.cwd(), projectName.toString());
   const folderPath = path.join(OUTPUT_PATH, projectName.toString());
   const configurations = getConfigurations(services);
@@ -26,30 +32,37 @@ const getBoilerplates = async (services) => {
   Object.keys(configurations).forEach((microservice)=>{
     generatorResponses.push(generateBoilerplate(projectName, microservice, configurations));
   });
+
   await Promise.all(generatorResponses);
-  console.log('All boilerplates generated');
+  cli.ok('All boilerplates generated');
     
   await dockerComposeGenerator(projectName, configurations);
-  console.log('Docker compose generated');
-    
+  cli.ok('Docker compose generated');
+
   await k8sManifestGenerator(projectName);
-  console.log('K8s manifest generated');
+  cli.ok('K8s manifest generated');
+
+  await fs.copy(folderPath, boilerplatesPath);
+  cli.ok('Generated all files successfully');
       
-  generateDockerImage(projectName, configurations).then(() => {
-    console.log('Docker image generated');
-    pushDockerImage(configurations).then(() => {
-      console.log('Docker image pushed');
-      fs.rmSync(folderPath, { recursive: true, force: true });
-    });
-  });
-  fs.copy(folderPath, boilerplatesPath, err => {
-    if(err) return console.error(err);
-    console.log('success!');
-  });
+  const dockerImageSpinner = new Spinner('Generating docker images.. %s');
+  dockerImageSpinner.setSpinnerString('|/-\\');
+  dockerImageSpinner.start();
+  await generateDockerImage(projectName, configurations);
+  dockerImageSpinner.stop(true);
+  cli.ok('Docker images generated');
+
+  const pushDockerImageSpinner = new Spinner('Pushing docker images.. %s');
+  pushDockerImageSpinner.setSpinnerString('|/-\\');
+  pushDockerImageSpinner.start();
+  await pushDockerImage(configurations);
+  pushDockerImageSpinner.stop(true);
+  cli.ok('Docker images pushed');
+
+  fs.rmSync(folderPath, { recursive: true, force: true });
+
 };
 
-getBoilerplates(services).then(() => {
-  console.log('Done');
-}).catch((err) => {
-  console.log('Error: ', err);
+getBoilerplates(services).catch((err) => {
+  cli.error('Error: ', err.message);
 });
