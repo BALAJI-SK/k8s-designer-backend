@@ -1,4 +1,3 @@
-const data = require('../../input.json');
 const httpError = require('../exceptions/user.exception');
 const userRepositoryService = require('../repositories/user.repositories');
 const passwordUtil = require('../utility/password.util');
@@ -26,15 +25,6 @@ const saveOtp = async (email, otp) => {
   await userRepositoryService.saveOtp(email, otp);
 };
 
-const getOrderData = () => data.log;
-
-const getCustomerData = customerId => {
-  return data.log.filter((record) => {
-    if (record.customerId == customerId) {
-      return record;
-    }
-  });
-};
 
 const createUser = async (name, email, otp, password) => {
   const otpfromDB = await userRepositoryService.getOtp(email);
@@ -79,4 +69,4 @@ const validateUser = async (token) => {
   return { message: 'Authorize User' };
 };
 
-module.exports = { generateOtp, saveOtp, getOrderData, getCustomerData , createUser, loginUser, validateUser };
+module.exports = { generateOtp, saveOtp, createUser, loginUser, validateUser };
