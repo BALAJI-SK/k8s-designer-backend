@@ -1,9 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const archive = require('../config/archiver.config.js');
+const archiver = require('archiver');
 const folderUtility = require('../utility/folder.utility.js');
 
 const zipFolder = (folderPath, outputPath) => {
+  const archive = archiver('zip', {
+    zlib: { level: 9 }
+  });
   const outputFilePath = path.resolve(outputPath);
 
   return new Promise((resolve, reject) => {
@@ -17,9 +20,7 @@ const zipFolder = (folderPath, outputPath) => {
 
         archive.pipe(output);
         archive.directory(resolvedFolderPath, folderName);
-        console.log('below directory');
         archive.finalize();
-        console.log('below finalize');
         
         output.on('close', () => {
           resolve(outputFilePath);
