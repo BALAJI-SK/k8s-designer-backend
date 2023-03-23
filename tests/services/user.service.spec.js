@@ -6,15 +6,19 @@ const userRepositoryService = require('../../src/repositories/user.repositories'
 describe('User Service', () => { 
   describe('Create User', () => { 
     it('should create a new user', async () => {
+      jest.spyOn(userRepositoryService, 'getOtp').mockResolvedValue([{'otp': '1234', 'timestamp': new Date(Date.now()-1*60*1000)}]);
+      jest.spyOn(userRepositoryService, 'deleteOtp').mockResolvedValue(null);
       jest.spyOn(passwordUtil, 'hashPassword').mockResolvedValue('hashedpassword');
       jest.spyOn(userRepositoryService, 'createUser').mockResolvedValue({ id: 1, name: 'name', email: 'email', password: 'hashedpassword' });
-      const result = await userService.createUser('name', 'email', 'password');
+      const result = await userService.createUser('name', 'email', '1234', 'password');
       expect(result).toEqual({ message: 'User Registered Succesfully' });
     });
     it('should throw custom error', async () => {
+      jest.spyOn(userRepositoryService, 'getOtp').mockResolvedValue([{'otp': '1234', 'timestamp': new Date(Date.now()-1*60*1000)}]);
+      jest.spyOn(userRepositoryService, 'deleteOtp').mockResolvedValue(null);
       jest.spyOn(passwordUtil, 'hashPassword').mockResolvedValue('hashedpassword');
       jest.spyOn(userRepositoryService, 'createUser').mockResolvedValue(null);
-      expect(userService.createUser('name', 'email', 'password')).rejects.toThrow('Unable to create user');
+      expect(userService.createUser('name', 'email', '1234', 'password')).rejects.toThrow('Unable to create user');
     });
   });
 
