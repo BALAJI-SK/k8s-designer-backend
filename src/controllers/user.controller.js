@@ -2,11 +2,29 @@ const userService= require('../services/user.service');
 const httpError = require('../exceptions/user.exception');
 // const httpConstants = require('http2').constants;
 
+const generateOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const result = await userService.generateOtp(email);
+    await userService.saveOtp(email, result.otp);
+    res.status(200).json(result.message);
+  } catch (error) {
+    if(error instanceof httpError) {
+      res.status(error.status).json({
+        message: error.message
+      });
+      return;
+    }
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
 
 const createUser = async (req, res) => { 
   try{
-    const { name, email, password } = req.body;
-    const result = await userService.createUser(name, email, password);
+    const { name, email, otp, password } = req.body;
+    const result = await userService.createUser(name, email, otp, password);
     res.status(201).json(result);
   } catch(err){
     if (err instanceof httpError) {
@@ -55,4 +73,4 @@ const validateUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, loginUser, validateUser };
+module.exports = { createUser, loginUser, validateUser, generateOtp };

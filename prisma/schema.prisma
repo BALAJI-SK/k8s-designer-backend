@@ -11,7 +11,13 @@ datasource db {
   url        = env("DATABASE_URL")
   extensions = [pgcrypto]
 }
-
+model otps{
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  otp String @map("otp")
+  email String @map("email")
+  timestamp DateTime @map("timestamp") @default(now())
+  @@map("otps")
+}
 model user {
   id       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   fullName String   @map("full_name")

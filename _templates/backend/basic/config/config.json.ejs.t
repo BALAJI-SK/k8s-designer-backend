@@ -53,7 +53,7 @@ module.exports = {
     "database": "<%= database.name %>",
     "host": "<%= database.dbHost %>",
     "dialect": "postgres",
-    "port": "5432"
+    "port": "5432",
     }<% if(index < databases.length - 1) { %>,<% } %>
   <%_ }) _%>
 }

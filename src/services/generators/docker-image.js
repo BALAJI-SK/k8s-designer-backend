@@ -35,7 +35,7 @@ const generateDockerImage = async (projectId, config) => {
           )
           .then((stream) => {
             stream.on('data', (data) => {
-              console.log(data['stream']);
+              console.log(data.toString());
             });
 
             stream.on('end', () => {
