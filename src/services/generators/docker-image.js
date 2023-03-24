@@ -16,7 +16,6 @@ const generateDockerImage = async (projectId, config) => {
       });
     });
   });
-  console.table(boilerplates);
 
   await Promise.all(
     boilerplates.map(async (boilerplate) => {
@@ -34,12 +33,9 @@ const generateDockerImage = async (projectId, config) => {
             { t: image }
           )
           .then((stream) => {
-            stream.on('data', (data) => {
-              console.log(data.toString());
-            });
+            stream.on('data', () => {});
 
             stream.on('end', () => {
-              console.error(`Docker image ${image} generated`);
               resolve();
             });
 
