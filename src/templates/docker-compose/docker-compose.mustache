@@ -4,10 +4,12 @@ services:
   {{name}}:
     image: {{{image}}}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U {{dbUser}} -d {{name}}"]
       interval: 15s
       timeout: 15s
       retries: 15
+    labels:
+      kompose.image-pull-policy: Always
     deploy:
       replicas: {{numberOfReplicas}}
     {{#envVariables.0}}
@@ -40,6 +42,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+    labels:
+      kompose.image-pull-policy: Always
     {{#envVariables.0}}
     environment:
     {{/envVariables.0}}
@@ -56,6 +60,8 @@ services:
       - "{{port}}:80"
     deploy:
       replicas: {{numberOfReplicas}}
+    labels:
+      kompose.image-pull-policy: Always
     {{#backends.0}}
     depends_on:
     {{/backends.0}}
