@@ -31,16 +31,17 @@ const sendOtp = async (email) => {
     ],
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (!info) {
-      console.log(error);
-      throw new httpError("some problem with the email", 400);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        reject(new httpError("some problem with the email", 400));
+      } else {
+        console.log("Email sent: " + info.response);
+        resolve(OTP);
+      }
+    });
   });
-
-  return OTP;
 };
 
 module.exports = { transporter, sendOtp };
