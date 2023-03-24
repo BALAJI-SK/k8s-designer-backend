@@ -13,7 +13,7 @@ const runHygen = (projectId, generator, action, config) => {
       projectDir,
       '--config',
       JSON.stringify(config),
-    ]);
+    ], { env: { ...process.env, HYGEN_TMPLS: '../k8s-designer-backend/_templates' } });
     // hygenProcess.stdout.on('data', (data) => {
     //   console.log(data.toString());
     // });

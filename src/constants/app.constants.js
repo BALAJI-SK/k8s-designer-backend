@@ -14,7 +14,7 @@ const TEMPLATE_PATH = {
     'src/templates/docker-compose/backend.mustache'
   ),
 };
-const DOCKER_COMPOSE_TEMPLATE_PATH = 'src/templates/docker-compose/docker-compose.mustache';
+const DOCKER_COMPOSE_TEMPLATE_PATH = '../k8s-designer-backend/src/templates/docker-compose/docker-compose.mustache';
 
 const UTF8_ENCODING = 'utf8';
 const OUTPUT_PATH = path.join(PROJECT_ROOT, 'tmp');
