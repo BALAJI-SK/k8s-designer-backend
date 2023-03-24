@@ -1,20 +1,42 @@
-const data = require('../../input.json');
 const httpError = require('../exceptions/user.exception');
 const userRepositoryService = require('../repositories/user.repositories');
 const passwordUtil = require('../utility/password.util');
 const jwtUtil = require('../utility/jwt.util');
+const otpUtil = require('../utility/otp.util');
 
-const getOrderData = () => data.log;
-
-const getCustomerData = customerId => {
-  return data.log.filter((record) => {
-    if (record.customerId == customerId) {
-      return record;
+const generateOtp = async (email) => {
+  try{
+    const doesUserExist = await userRepositoryService.doesUserExist(email);
+    if(doesUserExist) {
+      throw new httpError('User already exists', 400);
     }
-  });
+    const otp = await otpUtil.sendOtp(email);
+    return {
+      message: 'OTP sent successfully',
+      otp,
+    };
+  }catch(error){
+    throw new httpError('some problem with the email', 404);
+  }
 };
 
-const createUser = async (name, email, password) => {
+const saveOtp = async (email, otp) => {
+  await userRepositoryService.deleteOtp(email);
+  await userRepositoryService.saveOtp(email, otp);
+};
+
+
+const createUser = async (name, email, otp, password) => {
+  const otpfromDB = await userRepositoryService.getOtp(email);
+  // console.log(otpfromDB);
+  if(otpfromDB[0].otp !== otp) {
+    throw new httpError('Incorrect OTP', 400);
+  }
+  // console.log(otpfromDB[0].timestamp, new Date(Date.now()-1*60*1000));
+  if(otpfromDB[0].timestamp < new Date(Date.now()- process.env.OTP_EXPIRY_TIME)) {
+    throw new httpError('OTP Expired', 400);
+  }
+  await userRepositoryService.deleteOtp(email);
   const { hashpassword, salt } = await passwordUtil.hashPassword(password);
   const newUser = await userRepositoryService.createUser({ fullName: name, email, password: hashpassword, salt });
   if(!newUser) {
@@ -47,4 +69,4 @@ const validateUser = async (token) => {
   return { message: 'Authorize User' };
 };
 
-module.exports = { getOrderData, getCustomerData , createUser, loginUser, validateUser };
+module.exports = { generateOtp, saveOtp, createUser, loginUser, validateUser };
