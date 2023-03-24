@@ -10,6 +10,14 @@ src/middlewares/
 src/repositories/
 src/routes/
 tests/
+src/services/user.service.js
+src/services/project.service.js
+src/utility/abcd.gif
+src/utility/joi.util.js
+src/utility/jwt.util.js
+src/utility/otp.util.js
+src/utility/password.util.js
+src/utility/projects.util.js
 .env
 dockerfile
 index.js
