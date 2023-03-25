@@ -16,7 +16,7 @@ const generateOtp = async (email) => {
       otp,
     };
   }catch(error){
-    throw new httpError('some problem with the email', 404);
+    throw new httpError(error.message, 404);
   }
 };
 
