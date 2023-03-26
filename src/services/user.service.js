@@ -40,7 +40,6 @@ const createUser = async (name, email, otp, password) => {
   const { hashpassword, salt } = await passwordUtil.hashPassword(password);
   const newUser = await userRepositoryService.createUser({ fullName: name, email, password: hashpassword, salt });
   if(!newUser) {
-    // console.log(newUser);
     throw new httpError('Unable to create user', 400);
   }
   return {
@@ -57,7 +56,7 @@ const loginUser = async (email, password) => {
   if(!checkPassword) {
     throw new httpError('Incorrect Password', 400);
   }
-  const token = await jwtUtil.signToken({ id: existingUser.id, name: existingUser.name, email: existingUser.email });
+  const token = await jwtUtil.signToken({ id: existingUser.id, fullName: existingUser.fullName, email: existingUser.email });
   return `Bearer ${token}`;
 };
 
@@ -66,7 +65,12 @@ const validateUser = async (token) => {
   if(!verifiedToken) {
     throw new httpError('Unauthorize User', 401);
   }
-  return { message: 'Authorize User' };
+  return { 
+    data: { 
+      fullName: verifiedToken.fullName, 
+      email: verifiedToken.email
+    } 
+  };
 };
 
 module.exports = { generateOtp, saveOtp, createUser, loginUser, validateUser };
