@@ -18,6 +18,8 @@ services:
     {{/envVariables}}
     ports:
       - "{{port}}:5432"
+    labels:
+      kompose.image-pull-policy: {{imagePullPolicy}}
     volumes:
       - {{name}}_data:/var/lib/postgresql/data
 {{/Database}}
@@ -28,6 +30,8 @@ services:
       - "{{port}}:{{port}}"
     deploy:
       replicas: {{numberOfReplicas}}
+    labels:
+      kompose.image-pull-policy: {{imagePullPolicy}}
     {{#databases.0}}
     depends_on:
     {{/databases.0}}
@@ -36,7 +40,7 @@ services:
         condition: service_healthy
       {{/databases}}
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4005/api/ping || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4005/api/ping"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -56,6 +60,8 @@ services:
       - "{{port}}:80"
     deploy:
       replicas: {{numberOfReplicas}}
+    labels:
+      kompose.image-pull-policy: {{imagePullPolicy}}
     {{#backends.0}}
     depends_on:
     {{/backends.0}}

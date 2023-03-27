@@ -61,6 +61,8 @@ describe('Repository Service Object', () => {
       envVariablesRepository.create.mockResolvedValue({ id: 1 });
       imageServiceRepository.create.mockResolvedValue({ id: 1 });
 
+      process.env.OFFLINE_ENABLED = 'true';
+
       const serviceId = await repositoryServiceObj.FrontEnd(service, projectId);
 
       expect(serviceId).toBe(1);

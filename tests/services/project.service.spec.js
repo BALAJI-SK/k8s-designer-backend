@@ -5,6 +5,7 @@ const dockerComposeGenerator = require('../../src/services/generators/docker-com
 const generateDockerImage = require('../../src/services/generators/docker-image.js');
 const pushDockerImage = require('../../src/services/pushDockerImage.js');
 const k8sManifestGenerator = require('../../src/services/generators/k8s-manifest.js');
+const repositoryServiceObj = require('../../src/utility/projects.utils.js');
 const { zipFolder } = require('../../src/services/zipping.service.js');
 const { OUTPUT_PATH } = require('../../src/constants/app.constants.js');
 const path = require('path');
@@ -30,6 +31,9 @@ jest.mock('../../src/services/generators/docker-compose.js', () => {
 jest.mock('../../src/services/generators/docker-image.js', () => {
   return jest.fn().mockResolvedValue();
 });
+jest.mock('../../src/services/loadLocalImage.js', () => {
+  return jest.fn().mockResolvedValue();
+});
 jest.mock('../../src/services/pushDockerImage.js', () => {
   return jest.fn().mockResolvedValue();
 });
@@ -41,8 +45,11 @@ jest.mock('../../src/services/zipping.service.js', () => {
     zipFolder: jest.fn(),
   };
 });
-const repositoryServiceObj = require('../../src/utility/projects.utils.js');
+
 describe('microservices service testing', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
   it('should populate microservice table ', async () => {
     jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
       'id':projectId,
@@ -91,6 +98,7 @@ describe('microservices service testing', () => {
     expect(result).toEqual(path.join(OUTPUT_PATH, `${projectId}.zip`));
   });
   it('should call the generators with correct parameters', async () => {
+    process.env.OFFLINE_ENABLED = 'false';
     const folderPath = path.join(OUTPUT_PATH, projectId.toString());
     const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);
     expect(generateBoilerplate).toHaveBeenCalledWith(projectId, 'FrontEnd', sampleConfigurations);
