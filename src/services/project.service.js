@@ -16,6 +16,7 @@ const backendService = require('../repositories/backendService.repositories');
 const databaseService = require('../repositories/databaseService.repositories');
 const envVariables= require('../repositories/envVariables.repositories');
 const imageService = require('../repositories/imageService.repositories');
+const loadLocalImage = require('./loadLocalImage');
 
 const generateProject = async (data) =>{
   const {services, userId} = data;
@@ -46,9 +47,18 @@ const generateProject = async (data) =>{
   
   generateDockerImage(projectId, configurations).then(() => {
     console.log('Docker image generated');
-    pushDockerImage(configurations).then(() => {
-      console.log('Docker image pushed');
-    });
+    if(process.env.OFFLINE_ENABLED === 'true'){
+      console.log('Loading docker images to minikube');
+      loadLocalImage(configurations).then(() => {
+        console.log('Docker images loaded to minikube');
+      });
+    }
+    else{
+      pushDockerImage(configurations).then(() => {
+        console.log('Docker image pushed');
+      });
+
+    }
   });
   
   

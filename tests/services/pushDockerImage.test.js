@@ -33,6 +33,7 @@ const config = {
       token: 'token',
       email: 'test@test.com',
       repositoryImageAddress: 'test.com',
+      image: 'test/frontend',
     },
   ],
 
@@ -43,6 +44,7 @@ const config = {
       token: 'token',
       email: 'test@test.com',
       repositoryImageAddress: 'test.com',
+      image: 'test/backend',
     },
   ],
 

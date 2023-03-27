@@ -12,11 +12,13 @@ const getConfigurations = (services) => {
       name: key,
       value: service['customEnv'][key],
     }));
+    console.log(service['im']);
     const serviceConfig = {
       ...service['configurations'],
       envVariables,
+      image: service['imageRepository'] ? service['imageRepository']['username'] + '/' + service['configurations']['name'] : service['configurations']['name'],
       ...service['imageRepository'],
-      image: service['imageRepository']['username'] + '/' + service['configurations']['name'],
+      imagePullPolicy: process.env.OFFLINE_ENABLED === 'true' ? 'Never' : 'Always',
     };
     if(service['service_type'] === 'FrontEnd'){
       serviceConfig['backends'] = [];
