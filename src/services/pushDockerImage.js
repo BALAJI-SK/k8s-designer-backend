@@ -8,6 +8,7 @@ const pushDockerImage = async (config) => {
     microservice.forEach((instance) => {
       boilerplates.push({
         name: instance.name,
+        imageName: instance.image,
         username: instance.username,
         password: instance.token,
         email: instance.email,
@@ -18,10 +19,10 @@ const pushDockerImage = async (config) => {
 
   await Promise.all(
     boilerplates.map(async (boilerplate) => {
-      const { name, username, password, email, serverAddress } = boilerplate;
+      const { name, username, password, email, serverAddress, imageName } = boilerplate;
 
       await new Promise((resolve, reject) => {
-        const image = docker.getImage(`${username}/${name}`);
+        const image = docker.getImage(imageName);
 
         image
           .push({

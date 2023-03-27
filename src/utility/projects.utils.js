@@ -39,15 +39,17 @@ const repositoryServiceObj = {
       
     );
 
-    await imageServiceRepository.create(
-      {
-        imageRepositoryUrl:imageRepository.repositoryImageAddress,
-        imageRepositoryToken:imageRepository.token,
-        email: imageRepository.email,
-        username: imageRepository.username,
-        serviceId:serviceId,
-      });
+    if(process.env.OFFLINE_ENABLED === 'true'){
 
+      await imageServiceRepository.create(
+        {
+          imageRepositoryUrl:imageRepository.repositoryImageAddress,
+          imageRepositoryToken:imageRepository.token,
+          email: imageRepository.email,
+          username: imageRepository.username,
+          serviceId:serviceId,
+        });
+    }
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
         {
@@ -90,14 +92,17 @@ const repositoryServiceObj = {
       
     );
 
-    await imageServiceRepository.create(
-      {
-        imageRepositoryUrl:imageRepository.repositoryImageAddress,
-        imageRepositoryToken:imageRepository.token,
-        email: imageRepository.email,
-        username: imageRepository.username,
-        serviceId:serviceId,
-      });
+    if(process.env.OFFLINE_ENABLED === 'true'){
+
+      await imageServiceRepository.create(
+        {
+          imageRepositoryUrl:imageRepository.repositoryImageAddress,
+          imageRepositoryToken:imageRepository.token,
+          email: imageRepository.email,
+          username: imageRepository.username,
+          serviceId:serviceId,
+        });     
+    }
 
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
@@ -140,15 +145,17 @@ const repositoryServiceObj = {
       
     );
 
-    await imageServiceRepository.create(
-      {
-        imageRepositoryUrl:imageRepository.repositoryImageAddress,
-        imageRepositoryToken:imageRepository.token,
-        email: imageRepository.email,
-        username: imageRepository.username,
-        serviceId:serviceId,
-      });
-      
+    if(process.env.OFFLINE_ENABLED === 'true'){
+
+      await imageServiceRepository.create(
+        {
+          imageRepositoryUrl:imageRepository.repositoryImageAddress,
+          imageRepositoryToken:imageRepository.token,
+          email: imageRepository.email,
+          username: imageRepository.username,
+          serviceId:serviceId,
+        });
+    }
     for(const connectedService of connected_service){
       await envVariablesRepository.create(
         {
