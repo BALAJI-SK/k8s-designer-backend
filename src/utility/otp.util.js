@@ -4,7 +4,9 @@ const httpError = require('../exceptions/user.exception');
 const path = require('path');
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.SMTP_EMAIL,
     pass: process.env.EMAIL_SMTP_PASSWORD,
