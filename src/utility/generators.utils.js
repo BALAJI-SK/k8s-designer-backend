@@ -1,7 +1,7 @@
 const { MODELS } = require('../constants/generator.constants');
 
 
-const getConfigurations = (services) => {
+const getConfigurations = (services, isOffline) => {
   const config = {
     FrontEnd: [],
     BackEnd: [],
@@ -12,13 +12,12 @@ const getConfigurations = (services) => {
       name: key,
       value: service['customEnv'][key],
     }));
-    console.log(service['im']);
     const serviceConfig = {
       ...service['configurations'],
       envVariables,
       image: service['imageRepository'] ? service['imageRepository']['username'] + '/' + service['configurations']['name'] : service['configurations']['name'],
       ...service['imageRepository'],
-      imagePullPolicy: process.env.OFFLINE_ENABLED === 'true' ? 'Never' : 'Always',
+      imagePullPolicy: isOffline ? 'Never' : 'Always',
     };
     if(service['service_type'] === 'FrontEnd'){
       serviceConfig['backends'] = [];

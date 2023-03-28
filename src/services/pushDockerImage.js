@@ -34,7 +34,17 @@ const pushDockerImage = async (config) => {
             },
           })
           .then((stream) => {
-            stream.on('data', () => {});
+            stream.on('data', (data) => {
+              const dataArray = data.toString().split('\n');
+              dataArray.forEach((data) => {
+                if (data) {
+                  const parsedData = JSON.parse(data);
+                  if (parsedData.error) {
+                    reject(`Failed to push ${username}/${name}: ${parsedData.error}`);
+                  }
+                }
+              });
+            });
 
             stream.on('end', () => {
               image.remove({ force: true }, (err) => {
@@ -47,6 +57,7 @@ const pushDockerImage = async (config) => {
             });
 
             stream.on('error', (err) => {
+              console.log(`Failed to push ${username}/${name}: ${err}`);
               reject(err);
             });
           })
