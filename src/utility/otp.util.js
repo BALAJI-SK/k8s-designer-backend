@@ -1,10 +1,10 @@
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
-const httpError = require("../exceptions/user.exception");
-const path = require("path");
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const httpError = require('../exceptions/user.exception');
+const path = require('path');
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
@@ -15,18 +15,18 @@ const transporter = nodemailer.createTransport({
 
 const sendOtp = async (email) => {
   const OTP = crypto.randomInt(100000, 999999).toString();
-  const imagePath = path.resolve(__dirname, "abcd.gif");
+  const imagePath = path.resolve(__dirname, 'abcd.gif');
 
   const mailOptions = {
     from: process.env.SMTP_EMAIL,
     to: email,
-    subject: "OTP for registration (K8S Designer)",
+    subject: 'OTP for registration (K8S Designer)',
     html: `<h1>Hello Developer!</h1><h3>Your OTP is <b>${OTP}</b></h3><p>This OTP is valid for 5 minutes</p><img src="cid:image1" alt="image"><p>Regards,</p><p>K8S Designer Team</p>`,
     attachments: [
       {
-        filename: "abcd.gif",
+        filename: 'abcd.gif',
         path: imagePath,
-        cid: "image1",
+        cid: 'image1',
       },
     ],
   };
@@ -35,9 +35,9 @@ const sendOtp = async (email) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
-        reject(new httpError("some problem with the email", 400));
+        reject(new httpError('some problem with the email', 400));
       } else {
-        console.log("Email sent: " + info.response);
+        console.log('Email sent: ' + info.response);
         resolve(OTP);
       }
     });

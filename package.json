@@ -7,10 +7,15 @@
     "dev": "node index.js",
     "test": "npx jest",
     "test-coverage": "concurrently 'npx jest tests' 'npx jest --coverage'",
-    "start": "npx nodemon index.js",
+    "start": "nodemon index.js",
     "linting": "npx eslint --fix .",
     "nodemon": "nodemon index.js",
     "prod:install": "NODE_ENV=production npm install "
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "tmp/"
+    ]
   },
   "prisma": {
     "seed": "node prisma/seed.js"

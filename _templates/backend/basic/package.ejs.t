@@ -18,10 +18,11 @@ force: true
     "sequelize:<%= database.name %>:create": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:create",
     "sequelize:<%= database.name %>:migrate": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:migrate",
     "sequelize:<%= database.name %>:migrate:undo": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:migrate:undo",
+    "sequelize:<%= database.name %>:seed:undo:all": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:seed:undo:all",
     "sequelize:<%= database.name %>:seed:all": "sequelize --options-path ./.sequelize-<%= database.name %> --env <%= database.name %> db:seed:all",
     <%_ }) _%>
     <%_ if(databases.length > 0) { _%>
-    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.name %>:migrate && npm run sequelize:<%= database.name %>:seed:all && <% }) %> npm run nodemon",
+    "start": "<% databases.forEach((database) => { %> npm run sequelize:<%= database.name %>:migrate && npm run sequelize:<%= database.name %>:seed:undo:all && npm run sequelize:<%= database.name %>:seed:all && <% }) %> npm run nodemon",
     <%_ } _%>
     "nodemon": "nodemon index.js"
   },
