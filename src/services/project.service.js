@@ -30,7 +30,7 @@ const generateProject = async (data) =>{
     repositoryServiceObj[service.service_type](service,projectId);
   });
   // const projectId = '6d5ef481-7340-44c0-991c-df95714d76ac';
-  const configurations = getConfigurations(services);
+  const configurations = getConfigurations(services, process.env.OFFLINE_ENABLED === 'true');
   console.log(configurations);
   let generatorResponses = [];
   Object.keys(configurations).forEach((microservice)=>{

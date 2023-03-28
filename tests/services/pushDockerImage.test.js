@@ -6,7 +6,7 @@ jest.mock('dockerode', () => {
   const mockStream = {
     on: jest.fn().mockImplementation(function (event, callback) {
       if (event === 'data') {
-        callback('data');
+        callback('{"data": "data"}');
       } else if (event === 'end') {
         callback();
       } else if (event === 'error') {
