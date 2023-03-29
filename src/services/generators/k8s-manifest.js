@@ -13,6 +13,13 @@ const k8sManifestGenerator = async (dockerComposePath, k8sManifestPath) => {
       const writeStream = fs.createWriteStream(k8sManifestPath);
       child.stdout.pipe(writeStream);
 
+      child.stderr.on('data', (data) => {
+        if(data.toString().includes('FATA')){
+          reject(data.toString());
+        }
+      });
+
+
       child.on('close', (code) => {
         if (code === 0) {
           resolve(code);

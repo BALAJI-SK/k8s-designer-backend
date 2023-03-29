@@ -3,5 +3,17 @@ to:  "<%= (databases.length === 0 ? (outputPath + '/' + name + '/data/input.json
 force: true
 ---
 {
-    "colors": ["red","blue","green","yellow"]
+  "colors": [
+    [
+      {
+        "name": "red"
+      },
+      {
+        "name": "blue"
+      },
+      {
+        "name": "green"
+      }
+    ]
+  ]
 }

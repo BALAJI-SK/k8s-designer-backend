@@ -1,13 +1,13 @@
 const cli = require('cli');
 const path = require('path');
-const { OUTPUT_PATH } = require('../../src/constants/app.constants');
+const { OUTPUT_PATH, DOCKER_COMPOSE_FILE_NAME, K8S_MANIFEST_FILE_NAME } = require('../../src/constants/app.constants');
 const dockerComposeGenerator = require('../../src/services/generators/docker-compose');
 const { generateDockerImage } = require('../../src/services/generators/docker-image');
 const { generateBoilerplate } = require('../../src/services/generators/generateBoilerplate.service');
 const k8sManifestGenerator = require('../../src/services/generators/k8s-manifest');
 const loadLocalImage = require('../../src/services/loadLocalImage');
 const pushDockerImage = require('../../src/services/pushDockerImage');
-const { getConfigurations } = require('../../src/utility/generators.utils');
+const { getConfigurations, getBoilerplatesConfig } = require('../../src/utility/generators.utils');
 const fsExtra = require('fs-extra');
 
 
@@ -26,8 +26,12 @@ const generateFromConfig = async (services, projectName, isOffline) => {
       
   await dockerComposeGenerator(projectName, configurations);
   cli.ok('Docker compose generated');
+
+  const projectDir = path.join(OUTPUT_PATH, projectName.toString());
+  const dockerComposePath = path.join(projectDir, DOCKER_COMPOSE_FILE_NAME);
+  const k8sManifestPath = path.join(projectDir, K8S_MANIFEST_FILE_NAME);
   
-  await k8sManifestGenerator(projectName);
+  await k8sManifestGenerator(dockerComposePath, k8sManifestPath);
   cli.ok('K8s manifest generated');
   
   await fsExtra.copy(folderPath, boilerplatesPath);
@@ -39,15 +43,16 @@ const generateFromConfig = async (services, projectName, isOffline) => {
   cli.spinner('Generating docker images..', true);
   cli.ok('Docker images generated');
   
+  const boilerplatesConfig = getBoilerplatesConfig(configurations);
   if(isOffline){
     cli.spinner('Loading docker images to minikube..');
-    await loadLocalImage(configurations);
+    await loadLocalImage(boilerplatesConfig);
     cli.spinner('Loading docker images to minikube..', true);
     cli.ok('Docker images loaded to minikube');
   }
   else{
     cli.spinner('Pushing docker images..');
-    await pushDockerImage(configurations);
+    await pushDockerImage(boilerplatesConfig);
     cli.spinner('Pushing docker images..', true);
     cli.ok('Docker images pushed');
   }
