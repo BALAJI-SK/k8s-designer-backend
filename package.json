@@ -10,7 +10,9 @@
     "start": "nodemon index.js",
     "linting": "npx eslint --fix .",
     "nodemon": "nodemon index.js",
-    "prod:install": "NODE_ENV=production npm install "
+    "prod:install": "NODE_ENV=production npm install ",
+    "db:down": "npx prisma migrate reset",
+    "db:up": "npx prisma migrate dev"
   },
   "nodemonConfig": {
     "ignore": [
