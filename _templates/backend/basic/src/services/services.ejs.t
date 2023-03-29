@@ -8,6 +8,7 @@ const data = require('../../data/input.json');
 const getDetails = () => data.colors;
 <% } %>
 
+
 <% if(databases.length > 0){ %>
 <%_ databases.forEach((db) => { _%>
 const {<%= db.model.name %>} = require('../models');
@@ -22,4 +23,6 @@ const getDetails = async () => {
 };
 <% } %>
 
-module.exports = { getDetails };
+const healthCheck = () => 'OK';
+
+module.exports = { getDetails, healthCheck };
