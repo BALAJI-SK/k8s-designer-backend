@@ -1,6 +1,6 @@
 const Docker = require('dockerode');
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
-const generateDockerImage = require('../../../src/services/generators/docker-image');
+const {generateDockerImage} = require('../../../src/services/generators/docker-image');
 
 jest.mock('dockerode', () => {
   const mockStream = {

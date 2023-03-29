@@ -25,31 +25,24 @@ jest.mock('dockerode', () => {
   return jest.fn(() => mockDocker);
 });
 
-const config = {
-  frontend: [
-    {
-      name: 'frontend',
-      username: 'test',
-      token: 'token',
-      email: 'test@test.com',
-      repositoryImageAddress: 'test.com',
-      image: 'test/frontend',
-    },
-  ],
-
-  backend: [
-    {
-      name: 'backend',
-      username: 'test',
-      token: 'token',
-      email: 'test@test.com',
-      repositoryImageAddress: 'test.com',
-      image: 'test/backend',
-    },
-  ],
-
-  database: [],
-};
+const config = [
+  {
+    name: 'frontend',
+    username: 'test',
+    password: 'test',
+    email: 'email',
+    serverAddress: 'test',
+    imageName: 'test/frontend',
+  },
+  {
+    name: 'backend',
+    username: 'test',
+    password: 'test',
+    email: 'email',
+    serverAddress: 'test',
+    imageName: 'test/backend',
+  },
+];
 
 describe('pushDockerImage', () => {
   it('should push a docker image successfully', async () => {
@@ -60,10 +53,10 @@ describe('pushDockerImage', () => {
 
     const {
       username: frontendUsername,
-      token: frontendPassword,
+      password: frontendPassword,
       email: frontendEmail,
-      repositoryImageAddress: frontendServerAddress,
-    } = config.frontend[0];
+      serverAddress: frontendServerAddress,
+    } = config[0];
 
     expect(docker.getImage().push).toHaveBeenCalledWith({
       authconfig: {
@@ -76,10 +69,10 @@ describe('pushDockerImage', () => {
 
     const {
       username: backendUsername,
-      token: backendPassword,
+      password: backendPassword,
       email: backendEmail,
-      repositoryImageAddress: backendServerAddress,
-    } = config.backend[0];
+      serverAddress: backendServerAddress,
+    } = config[1];
 
     expect(docker.getImage().push).toHaveBeenCalledWith({
       authconfig: {

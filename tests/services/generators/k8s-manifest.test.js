@@ -22,6 +22,9 @@ describe('k8sManifestGenerator', () => {
       stdout: {
         pipe: jest.fn(),
       },
+      stderr: {
+        on: jest.fn(),
+      },
     };
 
     const code = await k8sManifestGenerator(1);
@@ -37,6 +40,9 @@ describe('k8sManifestGenerator', () => {
       }),
       stdout: {
         pipe: jest.fn(),
+      },
+      stderr: {
+        on: jest.fn(),
       },
     };
 

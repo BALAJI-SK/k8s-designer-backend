@@ -2,23 +2,9 @@ var Docker = require('dockerode');
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 const pushDockerImage = async (config) => {
-  let boilerplates = [];
-
-  Object.values(config).forEach((microservice) => {
-    microservice.forEach((instance) => {
-      boilerplates.push({
-        name: instance.name,
-        imageName: instance.image,
-        username: instance.username,
-        password: instance.token,
-        email: instance.email,
-        serverAddress: instance.repositoryImageAddress,
-      });
-    });
-  });
 
   await Promise.all(
-    boilerplates.map(async (boilerplate) => {
+    config.map(async (boilerplate) => {
       const { name, username, password, email, serverAddress, imageName } = boilerplate;
 
       await new Promise((resolve, reject) => {
