@@ -73,6 +73,9 @@ const generateProject = async (data) =>{
 
 const getLatestProject = async (userId) =>{
   const project = await projectRepository.getLatestProject(userId);
+  if(project.length === 0){
+    return project;
+  }
   const projectId = project[0].id;
   // console.log('projectId',project);
   const services= await projectServiceConfig.getServices(projectId);
