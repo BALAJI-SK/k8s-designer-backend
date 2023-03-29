@@ -6,19 +6,14 @@ jest.mock('child_process', () => ({
 }));
 
 describe('loadLocalImage', () => {
-  const configurations = {
-    microservice1: [
-      {
-        image: 'image1',
-      },
-    ],
-    microservice2: [
-      {
-        image: 'image2',
-      },
-    ],
-    microservice3: []
-  };
+  const configurations = [
+    {
+      imageName: 'test-image',
+    },
+    {
+      imageName: 'test-image-2',
+    }
+  ];
   it('should resolve if all images are loaded successfully', async () => {
     spawn.mockReturnValue({
       on: jest.fn().mockImplementation((event, callback) => {

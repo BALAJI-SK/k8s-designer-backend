@@ -3,6 +3,35 @@ var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 const path = require('path');
 const { OUTPUT_PATH } = require('../../constants/app.constants');
 
+const buildImage = async (dockerfilePath, imageName) => {
+  const parentDir = path.dirname(dockerfilePath);
+  const dockerfileName = path.basename(dockerfilePath);
+  return new Promise((resolve, reject) => {
+    docker
+      .buildImage(
+        {
+          context: parentDir,
+          src: [dockerfileName, '.'],
+        },
+        { 
+          t: imageName,
+          // dockerfile:dockerfilePath 
+        }
+      )
+      .then((stream) => {
+        stream.on('data', () => {});
+
+        stream.on('end', () => {
+          resolve();
+        });
+
+        stream.on('error', (err) => {
+          reject(err);
+        });
+      });
+  });
+};
+
 const generateDockerImage = async (projectId, config) => {
   const projectDir = path.join(OUTPUT_PATH, projectId.toString());
 
@@ -21,34 +50,12 @@ const generateDockerImage = async (projectId, config) => {
     boilerplates.map(async (boilerplate) => {
       const { name, image } = boilerplate;
 
-      await new Promise((resolve, reject) => {
-        const boilerplatePath = path.join(projectDir, name);
+      const DockerfilePath = path.join(projectDir, name, 'Dockerfile');
 
-        docker
-          .buildImage(
-            {
-              context: boilerplatePath,
-              src: ['Dockerfile', '.'],
-            },
-            { t: image }
-          )
-          .then((stream) => {
-            stream.on('data', () => {});
+      return buildImage(DockerfilePath, image);
 
-            stream.on('end', () => {
-              resolve();
-            });
-
-            stream.on('error', (err) => {
-              reject(err);
-            });
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
     })
   );
 };
 
-module.exports = generateDockerImage;
+module.exports = {generateDockerImage, buildImage};

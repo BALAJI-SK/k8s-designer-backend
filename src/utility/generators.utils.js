@@ -62,4 +62,22 @@ const getConfigurations = (services, isOffline) => {
   return config;
 };
 
-module.exports = { getConfigurations };
+const getBoilerplatesConfig = (config) => {
+  let boilerplates = [];
+
+  Object.values(config).forEach((microservice) => {
+    microservice.forEach((instance) => {
+      boilerplates.push({
+        name: instance.name,
+        imageName: instance.image,
+        username: instance.username,
+        password: instance.token,
+        email: instance.email,
+        serverAddress: instance.repositoryImageAddress,
+      });
+    });
+  });
+  return boilerplates;
+};
+
+module.exports = { getConfigurations, getBoilerplatesConfig };

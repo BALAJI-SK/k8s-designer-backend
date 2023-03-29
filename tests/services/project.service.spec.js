@@ -2,12 +2,12 @@ const services = require('../../src/services/project.service.js');
 const projectRepository = require('../../src/repositories/project.repositories');
 const { generateBoilerplate } = require('../../src/services/generators/generateBoilerplate.service.js');
 const dockerComposeGenerator = require('../../src/services/generators/docker-compose.js');
-const generateDockerImage = require('../../src/services/generators/docker-image.js');
+const {generateDockerImage} = require('../../src/services/generators/docker-image.js');
 const pushDockerImage = require('../../src/services/pushDockerImage.js');
 const k8sManifestGenerator = require('../../src/services/generators/k8s-manifest.js');
 const repositoryServiceObj = require('../../src/utility/projects.utils.js');
 const { zipFolder } = require('../../src/services/zipping.service.js');
-const { OUTPUT_PATH } = require('../../src/constants/app.constants.js');
+const { OUTPUT_PATH, DOCKER_COMPOSE_FILE_NAME, K8S_MANIFEST_FILE_NAME } = require('../../src/constants/app.constants.js');
 const path = require('path');
 const sampleConfigurations = {
   FrontEnd: {
@@ -18,6 +18,7 @@ const projectId = 1;
 jest.mock('../../src/utility/generators.utils.js', () => {
   return {
     getConfigurations: jest.fn().mockReturnValue(sampleConfigurations),
+    getBoilerplatesConfig: jest.fn().mockReturnValue(sampleConfigurations),
   };
 });
 jest.mock('../../src/services/generators/generateBoilerplate.service.js', () => {
@@ -29,7 +30,9 @@ jest.mock('../../src/services/generators/docker-compose.js', () => {
   return jest.fn();
 });
 jest.mock('../../src/services/generators/docker-image.js', () => {
-  return jest.fn().mockResolvedValue();
+  return {
+    generateDockerImage: jest.fn().mockResolvedValue(),
+  };
 });
 jest.mock('../../src/services/loadLocalImage.js', () => {
   return jest.fn().mockResolvedValue();
@@ -101,11 +104,14 @@ describe('microservices service testing', () => {
     process.env.OFFLINE_ENABLED = 'false';
     const folderPath = path.join(OUTPUT_PATH, projectId.toString());
     const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);
+    const projectDir = path.join(OUTPUT_PATH, projectId.toString());
+    const dockerComposePath = path.join(projectDir, DOCKER_COMPOSE_FILE_NAME);
+    const k8sManifestPath = path.join(projectDir, K8S_MANIFEST_FILE_NAME);
     expect(generateBoilerplate).toHaveBeenCalledWith(projectId, 'FrontEnd', sampleConfigurations);
     expect(dockerComposeGenerator).toHaveBeenCalledWith(projectId, sampleConfigurations);
     expect(generateDockerImage).toHaveBeenCalledWith(projectId, sampleConfigurations);
     expect(pushDockerImage).toHaveBeenCalledWith(sampleConfigurations);
-    expect(k8sManifestGenerator).toHaveBeenCalledWith(projectId);
+    expect(k8sManifestGenerator).toHaveBeenCalledWith(dockerComposePath, k8sManifestPath);
     expect(zipFolder).toHaveBeenCalledWith(folderPath, zipPath);
   });
 });

@@ -1,13 +1,13 @@
 
-const { getConfigurations } = require('../utility/generators.utils');
+const { getConfigurations, getBoilerplatesConfig } = require('../utility/generators.utils');
 const repositoryServiceObj = require('../utility/projects.utils');
 const dockerComposeGenerator = require('./generators/docker-compose');
 const { generateBoilerplate } = require('./generators/generateBoilerplate.service');
 const k8sManifestGenerator = require('./generators/k8s-manifest');
 const projectRepository = require('../repositories/project.repositories');
-const generateDockerImage = require('./generators/docker-image');
+const {generateDockerImage} = require('./generators/docker-image');
 const pushDockerImage = require('./pushDockerImage');
-const { OUTPUT_PATH } = require('../constants/app.constants');
+const { OUTPUT_PATH, DOCKER_COMPOSE_FILE_NAME, K8S_MANIFEST_FILE_NAME } = require('../constants/app.constants');
 const path = require('path');
 const { zipFolder } = require('./zipping.service');
 const projectServiceConfig = require('../repositories/projectServiceConfig.repositories');
@@ -42,19 +42,25 @@ const generateProject = async (data) =>{
   await dockerComposeGenerator(projectId, configurations);
   console.log('Docker compose generated');
 
-  await k8sManifestGenerator(projectId);
+
+  const projectDir = path.join(OUTPUT_PATH, projectId.toString());
+  const dockerComposePath = path.join(projectDir, DOCKER_COMPOSE_FILE_NAME);
+  const k8sManifestPath = path.join(projectDir, K8S_MANIFEST_FILE_NAME);
+
+  await k8sManifestGenerator(dockerComposePath, k8sManifestPath);
   console.log('K8s manifest generated');
   
+  const boilerplatesConfig = getBoilerplatesConfig(configurations);
   generateDockerImage(projectId, configurations).then(() => {
     console.log('Docker image generated');
     if(process.env.OFFLINE_ENABLED === 'true'){
       console.log('Loading docker images to minikube');
-      loadLocalImage(configurations).then(() => {
+      loadLocalImage(boilerplatesConfig).then(() => {
         console.log('Docker images loaded to minikube');
       });
     }
     else{
-      pushDockerImage(configurations).then(() => {
+      pushDockerImage(boilerplatesConfig).then(() => {
         console.log('Docker image pushed');
       });
 

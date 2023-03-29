@@ -1,19 +1,10 @@
-const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
-const {
-  OUTPUT_PATH,
-  DOCKER_COMPOSE_FILE_NAME,
-  K8S_MANIFEST_FILE_NAME,
-} = require('../../constants/app.constants');
 
-const k8sManifestGenerator = async (projectId) => {
-  const projectDir = path.join(OUTPUT_PATH, projectId.toString());
-  const dockerComposePath = path.join(projectDir, DOCKER_COMPOSE_FILE_NAME);
+const k8sManifestGenerator = async (dockerComposePath, k8sManifestPath) => {
+  
   return new Promise((resolve, reject) => {
     try {
-      const k8sManifestPath = path.join(projectDir, K8S_MANIFEST_FILE_NAME);
-
       const command = 'kompose';
       const args = ['convert', '-f', dockerComposePath, '-o', k8sManifestPath];
 
