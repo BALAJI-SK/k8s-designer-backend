@@ -79,12 +79,14 @@ const generateProject = async (data) =>{
 
 const getLatestProject = async (userId) =>{
   const project = await projectRepository.getLatestProject(userId);
+  // console.log('project',project);
   if(project.length === 0){
     return project;
   }
   const projectId = project[0].id;
   // console.log('projectId',project);
   const services= await projectServiceConfig.getServices(projectId);
+  console.log('services',services);
   let result =[];
   for(let i=0;i<services.length;i++){
     const service = services[i];
@@ -131,7 +133,7 @@ const getLatestProject = async (userId) =>{
     currentService.customEnv= temp;
 
     const imageRepo = await imageService.getImageRepo(serviceId);
-    currentService.imageRepository = {repositoryImageAddress: imageRepo[0].imageRepositoryUrl, username: imageRepo[0].username, email: imageRepo[0].email, token: imageRepo[0].imageRepositoryToken};
+    currentService.imageRepository = {repositoryImageAddress: imageRepo[0]?.imageRepositoryUrl ?? '', username: imageRepo[0]?.username ?? '', email: imageRepo[0]?.email ?? '', token: imageRepo[0]?.imageRepositoryToken ?? ''};
     result=[...result,currentService];
   }
   return result;
