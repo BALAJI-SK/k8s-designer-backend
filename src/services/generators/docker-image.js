@@ -19,7 +19,9 @@ const buildImage = async (dockerfilePath, imageName) => {
         }
       )
       .then((stream) => {
-        stream.on('data', () => {});
+        stream.on('data', () => {
+          // console.log(data.toString());
+        });
 
         stream.on('end', () => {
           resolve();
