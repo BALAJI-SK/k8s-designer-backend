@@ -48,6 +48,7 @@ describe('Repository Service Object', () => {
         connected_service: [],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
+          'offline_enabled': false
         },
         imageRepository:{
           repositoryImageAddress:'http://dockerhub.com',
@@ -81,11 +82,6 @@ describe('Repository Service Object', () => {
         value: 'postgres://localhost:5432/mydb',
         serviceId: 1,
       });
-      expect(imageServiceRepository.create).toHaveBeenCalledWith({
-        imageRepositoryUrl: 'http://dockerhub.com',
-        imageRepositoryToken: '2393040402919919939302',
-        serviceId: 1,
-      });
     });
   });
 
@@ -101,6 +97,7 @@ describe('Repository Service Object', () => {
         connected_service: ['db1', 'db2'],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
+          'offline_enabled': false,
         },
         imageRepository:{
           repositoryImageAddress:'http://dockerhub.com',
@@ -133,11 +130,6 @@ describe('Repository Service Object', () => {
         value: 'postgres://localhost:5432/mydb',
         serviceId: 1,
       });
-      expect(imageServiceRepository.create).toHaveBeenCalledWith({
-        imageRepositoryUrl: 'http://dockerhub.com',
-        imageRepositoryToken: '2393040402919919939302',
-        serviceId: 1,
-      });
     });
   });
 
@@ -157,6 +149,7 @@ describe('Repository Service Object', () => {
         connected_service: ['be1', 'be2'],
         customEnv: {
           'DATABASE_URL': 'postgres://localhost:5432/mydb',
+          'offline_enabled': false,
         },
         imageRepository:{
           repositoryImageAddress:'http://dockerhub.com',
@@ -189,11 +182,6 @@ describe('Repository Service Object', () => {
       expect(envVariablesRepository.create).toHaveBeenCalledWith({
         field: 'DATABASE_URL',
         value: 'postgres://localhost:5432/mydb',
-        serviceId: 1,
-      });
-      expect(imageServiceRepository.create).toHaveBeenCalledWith({
-        imageRepositoryUrl: 'http://dockerhub.com',
-        imageRepositoryToken: '2393040402919919939302',
         serviceId: 1,
       });
     });

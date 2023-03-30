@@ -30,7 +30,18 @@ const generateProject = async (data) =>{
     repositoryServiceObj[service.service_type](service,projectId);
   });
   // const projectId = '6d5ef481-7340-44c0-991c-df95714d76ac';
-  const configurations = getConfigurations(services, process.env.OFFLINE_ENABLED === 'true');
+  console.log(services);
+  // check if offline_enabled is true in customenv of any service in services array
+  let offline_enabled=  false;
+  for(let i=0; i<services.length; i++){
+    if(services[i].customEnv.offline_enabled && services[i].customEnv.offline_enabled === 'true'){
+      offline_enabled = 'true';
+      break;
+    }
+  }
+  console.log(offline_enabled);
+  
+  const configurations = getConfigurations(services, offline_enabled === 'true');
   console.log(configurations);
   let generatorResponses = [];
   Object.keys(configurations).forEach((microservice)=>{
@@ -53,7 +64,7 @@ const generateProject = async (data) =>{
   const boilerplatesConfig = getBoilerplatesConfig(configurations);
   generateDockerImage(projectId, configurations).then(() => {
     console.log('Docker image generated');
-    if(process.env.OFFLINE_ENABLED === 'true'){
+    if( offline_enabled === 'true'){
       console.log('Loading docker images to minikube');
       loadLocalImage(boilerplatesConfig).then(() => {
         console.log('Docker images loaded to minikube');

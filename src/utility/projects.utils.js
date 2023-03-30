@@ -39,7 +39,7 @@ const repositoryServiceObj = {
       
     );
 
-    if(process.env.OFFLINE_ENABLED === 'falsee'){
+    if(customEnv['offline_enabled']=== 'false'){
 
       await imageServiceRepository.create(
         {
@@ -92,7 +92,7 @@ const repositoryServiceObj = {
       
     );
 
-    if(process.env.OFFLINE_ENABLED === 'false'){
+    if(customEnv['offline_enabled']=== 'false'){
 
       await imageServiceRepository.create(
         {
@@ -145,7 +145,7 @@ const repositoryServiceObj = {
       
     );
 
-    if(process.env.OFFLINE_ENABLED === 'false'){
+    if(customEnv['offline_enabled']=== 'false'){
 
       await imageServiceRepository.create(
         {
