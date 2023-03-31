@@ -23,4 +23,6 @@ dockerfile
 index.js
 input.js
 tmp/
+tsconfig.json
+
 

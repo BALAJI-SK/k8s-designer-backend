@@ -35,7 +35,7 @@ describe('Repository Service Object', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-
+  
   describe('called with FrontEnd as key', () => {
     it('should create a new frontend service', async () => {
       const service = {
@@ -61,7 +61,7 @@ describe('Repository Service Object', () => {
       envVariablesRepository.create.mockResolvedValue({ id: 1 });
       imageServiceRepository.create.mockResolvedValue({ id: 1 });
 
-      process.env.OFFLINE_ENABLED = 'true';
+      process.env.OFFLINE_ENABLED = 'false';
 
       const serviceId = await repositoryServiceObj.FrontEnd(service, projectId);
 
