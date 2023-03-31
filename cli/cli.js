@@ -7,29 +7,27 @@ const generateForExisting = require('./services/generateForExisting');
 const generateFromConfig = require('./services/generateFromConfig');
 
 
-cli.setUsage('k8s-designer [command] [options]');
+cli.setUsage('k8s-designer [OPTIONS]');
 
 cli.parse({
-  filepath: ['f', 'Path to the file containing the service data', 'path', null],
-  projectName: ['p', 'Name of the project', 'string', 'k8s-designer'],
+  filepath: ['f', 'Path to the file containing the services\' configurations', 'path', null],
+  projectName: ['p', 'Name of the project', 'string', `k8s-project-${Date.now()}`],
   dockerComposePath: ['d', 'Path to the docker compose file', 'path', null],
-  isOffline: ['o', 'Flag to indicate if the project is being generated in offline mode', 'boolean', false]
-}, ['new', 'old']);
+  isOffline: ['m', 'Flag to indicate if the project is being generated in offline mode (load images directly to minikube)', 'boolean', false]
+});
 
 
 const options = cli.parse();
+const {filepath, projectName, dockerComposePath, isOffline} = options;
 
-
-if(cli.command === 'new'){
-  const { filepath, projectName, isOffline } = options;
+if(filepath){
   const serviceDataPath = resolve(process.cwd(), filepath);
   const services = require(serviceDataPath);
   generateFromConfig(services, projectName, isOffline).catch((err) => {
     cli.fatal(colors.red(err));
   });
 }
-if(cli.command === 'old'){
-  const { dockerComposePath} = options;
+if(dockerComposePath){
   generateForExisting(dockerComposePath).catch((err) => {
     cli.fatal(colors.red(err));
   });
