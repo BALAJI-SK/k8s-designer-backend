@@ -11,6 +11,8 @@ on:
       - feat/**
       - feature/**
       - dev/**
+      - test/**
+      - chores/**
 
 jobs:
   pull-request-check:
