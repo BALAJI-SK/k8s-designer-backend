@@ -17,6 +17,7 @@ const databaseService = require('../repositories/databaseService.repositories');
 const envVariables= require('../repositories/envVariables.repositories');
 const imageService = require('../repositories/imageService.repositories');
 const loadLocalImage = require('./loadLocalImage');
+const { MICROSERVICES } = require('../constants/generator.constants');
 
 const generateProject = async (data) =>{
   const {services, userId} = data;
@@ -33,7 +34,7 @@ const generateProject = async (data) =>{
   const configurations = getConfigurations(services, process.env.OFFLINE_ENABLED === 'true');
   console.log(configurations);
   let generatorResponses = [];
-  Object.keys(configurations).forEach((microservice)=>{
+  MICROSERVICES.forEach((microservice)=>{
     generatorResponses.push(generateBoilerplate(projectId, microservice, configurations));
   });
   await Promise.all(generatorResponses);

@@ -33,11 +33,11 @@ const pushDockerImage = async (config) => {
             });
 
             stream.on('end', () => {
-              image.remove({ force: true }, (err) => {
-                if (err) {
-                  console.error(`Failed to delete ${username}/${name}: ${err}`);
-                }
-              });
+              // image.remove({ force: true }, (err) => {
+              //   if (err) {
+              //     console.error(`Failed to delete ${username}/${name}: ${err}`);
+              //   }
+              // });
 
               resolve();
             });

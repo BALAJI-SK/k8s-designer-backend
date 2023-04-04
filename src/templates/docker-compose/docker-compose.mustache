@@ -23,6 +23,8 @@ services:
       kompose.image-pull-policy: {{imagePullPolicy}}
     volumes:
       - {{name}}_data:/var/lib/postgresql/data
+    networks:
+      - {{networks}}_network
 {{/Database}}
 {{#BackEnd}}
   {{name}}:
@@ -52,6 +54,8 @@ services:
     {{#envVariables}}
       {{name}}: "{{{value}}}"
     {{/envVariables}}
+    networks:
+      - {{networks}}_network
 
 {{/BackEnd}}
 {{#FrontEnd}}
@@ -77,6 +81,8 @@ services:
     {{#envVariables}}
       {{name}}: "{{{value}}}"
     {{/envVariables}}
+    networks:
+      - {{networks}}_network
 {{/FrontEnd}}
 
 {{#Database.0}}
@@ -85,3 +91,7 @@ volumes:
   {{#Database}}
   {{name}}_data:
   {{/Database}}
+networks:
+  {{#Networks}}
+  {{name}}_network:
+  {{/Networks}}

@@ -1,3 +1,5 @@
+const MICROSERVICES = ['FrontEnd', 'BackEnd', 'Database'];
+
 const MODELS = [
   {
     name: 'Country',
@@ -26,4 +28,4 @@ const MODELS = [
   },
 ];
 
-module.exports = {MODELS};
+module.exports = {MODELS, MICROSERVICES};
