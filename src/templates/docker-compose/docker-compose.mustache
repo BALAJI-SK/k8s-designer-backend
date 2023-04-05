@@ -24,7 +24,7 @@ services:
     volumes:
       - {{name}}_data:/var/lib/postgresql/data
     networks:
-      - {{networks}}_network
+      - {{networks}}
 {{/Database}}
 {{#BackEnd}}
   {{name}}:
@@ -55,7 +55,7 @@ services:
       {{name}}: "{{{value}}}"
     {{/envVariables}}
     networks:
-      - {{networks}}_network
+      - {{networks}}
 
 {{/BackEnd}}
 {{#FrontEnd}}
@@ -82,7 +82,7 @@ services:
       {{name}}: "{{{value}}}"
     {{/envVariables}}
     networks:
-      - {{networks}}_network
+      - {{networks}}
 {{/FrontEnd}}
 
 {{#Database.0}}
@@ -93,5 +93,5 @@ volumes:
   {{/Database}}
 networks:
   {{#Networks}}
-  {{name}}_network:
+  {{name}}:
   {{/Networks}}

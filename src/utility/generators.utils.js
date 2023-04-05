@@ -35,11 +35,12 @@ const getConfigurations = (services, isOffline) => {
   });
   let networks = [];
   let visited = {};
+  let networkCount = 0;
   for (let v in adjList) {
     if (!visited[v]) {
       const network = bfs(v, adjList, visited).sort();
       networks.push({
-        name: network.join('_'),
+        name: `network-${++networkCount}`,
         services: network,
       });
     }
