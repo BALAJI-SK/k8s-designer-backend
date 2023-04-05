@@ -23,20 +23,17 @@ const pushDockerImage = async (config) => {
             stream.on('data', (data) => {
               const dataArray = data.toString().split('\n');
               dataArray.forEach((data) => {
-                if (data) {
-                  const parsedData = JSON.parse(data);
-                  if (parsedData.error) {
-                    reject(`Failed to push ${username}/${name}: ${parsedData.error}`);
-                  }
+                const parsedData = JSON.parse(data);
+                if (parsedData.error) {
+                  reject(`Failed to push ${username}/${name}: ${parsedData.error}`);
                 }
+                
               });
             });
 
             stream.on('end', () => {
               image.remove({ force: true }, (err) => {
-                if (err) {
-                  console.error(`Failed to delete ${username}/${name}: ${err}`);
-                }
+                console.error(`Failed to delete ${username}/${name}: ${err}`);
               });
 
               resolve();
@@ -46,10 +43,10 @@ const pushDockerImage = async (config) => {
               console.log(`Failed to push ${username}/${name}: ${err}`);
               reject(err);
             });
-          })
-          .catch((err) => {
-            reject(err);
           });
+        // .catch((err) => {
+        //   reject(err);
+        // });
       });
     })
   );

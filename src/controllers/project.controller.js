@@ -22,7 +22,7 @@ const getLatestProjectController = async (req,res)=>{
     const project = await ProjectService.getLatestProject(decoded.id);
     res.status(200).json(project);
   }catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({data:err.message});
   }
 };
