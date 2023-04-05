@@ -45,7 +45,6 @@ const getConfigurations = (services, isOffline) => {
       });
     }
   }
-  console.log('networks',networks);
   services.forEach((service) => {
     const envVariables = Object.keys(service['customEnv']).map((key) => ({
       name: key,
@@ -104,7 +103,6 @@ const getConfigurations = (services, isOffline) => {
     config[service['service_type']].push(serviceConfig);
   });
   config['Networks'] = networks.map((network) => ({name: network.name}));
-  console.log('networks: ', networks);
   return config;
 };
 

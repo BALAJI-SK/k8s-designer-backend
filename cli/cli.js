@@ -20,15 +20,25 @@ cli.parse({
 const options = cli.parse();
 const {filepath, projectName, dockerComposePath, isOffline} = options;
 
-if(filepath){
-  const serviceDataPath = resolve(process.cwd(), filepath);
-  const services = require(serviceDataPath);
-  generateFromConfig(services, projectName, isOffline).catch((err) => {
-    cli.fatal(colors.red(err));
-  });
+if(filepath && dockerComposePath){
+  cli.fatal(colors.red('Please provide either a filepath or a dockerComposePath, not both'));
 }
-if(dockerComposePath){
-  generateForExisting(dockerComposePath).catch((err) => {
-    cli.fatal(colors.red(err));
-  });
+else{
+  if(filepath){
+    const serviceDataPath = resolve(process.cwd(), filepath);
+    const services = require(serviceDataPath);
+    generateFromConfig(services, projectName, isOffline).catch((err) => {
+      cli.fatal(colors.red(err));
+    });
+  }
+  else if(dockerComposePath){
+    generateForExisting(dockerComposePath).catch((err) => {
+      cli.fatal(colors.red(err));
+    });
+  }
+  else{
+    cli.fatal(colors.red('Please provide either a filepath or a dockerComposePath'));
+  }
 }
+
+
