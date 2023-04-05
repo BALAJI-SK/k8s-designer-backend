@@ -5,6 +5,10 @@ let mockWriteStream = {};
 
 jest.mock('fs', () => ({
   createWriteStream: () => mockWriteStream,
+  promises: {
+    readFile: () => Promise.resolve(''),
+    writeFile: () => Promise.resolve(),
+  },
 }));
 
 jest.mock('child_process', () => ({
