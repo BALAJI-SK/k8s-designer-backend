@@ -29,6 +29,9 @@ const k8sManifestGenerator = async (dockerComposePath, k8sManifestPath) => {
             if(k8yamlObjectItem.metadata){
               delete k8yamlObjectItem.metadata.annotations;
             }
+            if(k8yamlObjectItem.kind === 'Deployment'){
+              delete k8yamlObjectItem.spec.template.metadata.annotations;
+            }
           });
           await fs.promises.writeFile(k8sManifestPath, '---\n' + k8yamlObject.map(doc => yaml.dump(doc)).join('---\n'));
           resolve(code);
