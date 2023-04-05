@@ -19,11 +19,6 @@
       "tmp/"
     ]
   },
-  "jest": {
-    "coveragePathIgnorePatterns" : [
-      "src/repositories" 
-    ]
-  },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
