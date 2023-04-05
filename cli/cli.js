@@ -2,6 +2,7 @@
 
 const cli = require('cli');
 const colors = require('colors');
+const process = require('process');
 const { resolve } = require('path');
 const generateForExisting = require('./services/generateForExisting');
 const generateFromConfig = require('./services/generateFromConfig');
@@ -20,15 +21,32 @@ cli.parse({
 const options = cli.parse();
 const {filepath, projectName, dockerComposePath, isOffline} = options;
 
-if(filepath){
-  const serviceDataPath = resolve(process.cwd(), filepath);
-  const services = require(serviceDataPath);
-  generateFromConfig(services, projectName, isOffline).catch((err) => {
-    cli.fatal(colors.red(err));
-  });
+if(filepath && dockerComposePath){
+  cli.fatal(colors.red('Please provide either configurations filepath or dockerComposePath'));
 }
-if(dockerComposePath){
-  generateForExisting(dockerComposePath).catch((err) => {
-    cli.fatal(colors.red(err));
-  });
+else{
+  if(filepath){
+    const serviceDataPath = resolve(process.cwd(), filepath);
+    const services = require(serviceDataPath);
+    generateFromConfig(services, projectName, isOffline)
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((err) => {
+        cli.fatal(colors.red(err));
+      });
+  }
+  else if(dockerComposePath){
+    generateForExisting(dockerComposePath)
+      .then(() => {
+        process.exit(0);
+      })
+      .catch((err) => {
+        cli.fatal(colors.red(err));
+      });
+  }
+  else{
+    cli.fatal(colors.red('Please provide either configurations filepath or dockerComposePath'));
+  }
 }
+
