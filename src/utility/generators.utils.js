@@ -31,6 +31,11 @@ const getConfigurations = (services, isOffline) => {
   };
   const adjList = {};
   services.forEach((service) => {
+    service['connected_service'].forEach((connectedService) => {
+      if (!services.find((service) => service['configurations']['name'] === connectedService)) {
+        throw new Error('Invalid service connection');
+      }
+    });
     adjList[service['configurations']['name']] = service['connected_service'];
   });
   let networks = [];

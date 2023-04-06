@@ -66,6 +66,7 @@ describe('getConfigurations', () => {
           ],
           'image': 'frontend1',
           'imagePullPolicy': 'Never',
+          'networks': 'network-1',
           'backends': [
             {
               'name': 'backend1',
@@ -87,6 +88,7 @@ describe('getConfigurations', () => {
           ],
           'image': 'backend1',
           'imagePullPolicy': 'Never',
+          'networks': 'network-1',
           'databases': [
             {
               'name': 'database1',
@@ -130,9 +132,15 @@ describe('getConfigurations', () => {
             }
           ],
           'image': 'database1',
-          'imagePullPolicy': 'Never'
+          'imagePullPolicy': 'Never',
+          'networks': 'network-1',
         }
-      ]
+      ],
+      'Networks': [
+        {
+          'name': 'network-1',
+        },
+      ],
     });
   });
 
@@ -204,11 +212,17 @@ describe('getConfigurations', () => {
           ],
           'image': 'frontend1',
           'imagePullPolicy': 'Always',
+          'networks': 'network-1',
           'backends': [],
         }
       ],
       'BackEnd': [],
-      'Database': []
+      'Database': [],
+      'Networks': [
+        {
+          'name': 'network-1',
+        }
+      ],
     });
   });
 
@@ -250,6 +264,7 @@ describe('getConfigurations', () => {
           'image': 'abc/frontend1',
           'imagePullPolicy': 'Always',
           'backends': [],
+          'networks': 'network-1',
           'username': 'abc',
           'token': 'dckr_pat_abc',
           'email': 'abc@gmail.com',
@@ -257,7 +272,12 @@ describe('getConfigurations', () => {
         }
       ],
       'BackEnd': [],
-      'Database': []
+      'Database': [],
+      'Networks': [
+        {
+          'name': 'network-1',
+        }
+      ],
     });
 
 
