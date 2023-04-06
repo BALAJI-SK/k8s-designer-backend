@@ -84,7 +84,7 @@ describe('pushDockerImage', () => {
     });
   });
 
-  it('should throw an error if there is an error while pushing the image', async () => {
+  it('should throw an error if there is an error while getting the image', async () => {
     docker.getImage.mockReturnValueOnce({
       push: jest.fn().mockImplementation(() => {
         throw new Error('Error while pushing image');
@@ -95,5 +95,47 @@ describe('pushDockerImage', () => {
     await expect(pushDockerImage(config)).rejects.toThrow(
       'Error while pushing image'
     );
+  });
+  it('should throw an error if there is an error while pushing the image', async () => {
+    docker.getImage.mockReturnValueOnce({
+      push: jest.fn().mockResolvedValue({
+        on: jest.fn().mockImplementation((event, callback) => {
+          if (event === 'data') {
+            callback('{"error": "Error while pushing image"}');
+          } else if (event === 'end') {
+            callback();
+          } else if (event === 'error') {
+            callback(new Error('Error while pushing image'));
+          }
+        }),
+      }),
+      remove: jest.fn(),
+    });
+
+    pushDockerImage(config).catch((err) => {
+      expect(err).toBe('Failed to push test/frontend: Error while pushing image');
+    });
+  });
+  it('should throw an error if there is an error while removing the image', async () => {
+    docker.getImage.mockReturnValueOnce({
+      push: jest.fn().mockResolvedValue({
+        on: jest.fn().mockImplementation((event, callback) => {
+          if (event === 'data') {
+            callback('{"data": "data"}');
+          } else if (event === 'end') {
+            callback();
+          } else if (event === 'error') {
+            callback(new Error('Error while pushing image'));
+          }
+        }),
+      }),
+      remove: jest.fn().mockImplementation((options, callback) => {
+        callback(new Error('Error while removing image'));
+      }),
+    });
+
+    pushDockerImage(config).catch((err) => {
+      expect(err).toBe('Error while removing image');
+    });
   });
 });

@@ -36,23 +36,16 @@ describe('User Service', () => {
 
   describe('saveOTP', () => {
     it('should save otp', async () => {
+      jest.spyOn(userRepositoryService, 'deleteOtp').mockResolvedValue(null);
       jest.spyOn(userRepositoryService, 'saveOtp').mockResolvedValue(null);
-
-      jest
-        .spyOn(userService, 'saveOtp')
-        .mockResolvedValue({ message: 'OTP saved' });
-
       const result = await userService.saveOtp('email', '1234');
 
-      expect(result).toEqual({ message: 'OTP saved' });
+      expect(result).toEqual(undefined);
     });
 
     it('should throw custom error', async () => {
-      jest.spyOn(userRepositoryService, 'saveOtp').mockResolvedValue(null);
-
-      jest
-        .spyOn(userService, 'saveOtp')
-        .mockRejectedValue(new Error('Custom Error'));
+      jest.spyOn(userRepositoryService, 'deleteOtp').mockResolvedValue(null);
+      jest.spyOn(userRepositoryService, 'saveOtp').mockRejectedValue(new Error('Custom Error'));
 
       await expect(userService.saveOtp('email', '1234')).rejects.toThrow(
         'Custom Error'
@@ -84,6 +77,21 @@ describe('User Service', () => {
         'password'
       );
       expect(result).toEqual({ message: 'User Registered Succesfully' });
+    });
+    it('should throw custom error', async () => {
+      jest
+        .spyOn(userRepositoryService, 'getOtp')
+        .mockResolvedValue([
+          { otp: '1234', timestamp: new Date(Date.now() - 1 * 60 * 1000) },
+        ]);
+      jest.spyOn(userRepositoryService, 'deleteOtp').mockResolvedValue(null);
+      jest
+        .spyOn(passwordUtil, 'hashPassword')
+        .mockResolvedValue('hashedpassword');
+      jest.spyOn(userRepositoryService, 'createUser').mockResolvedValue(null);
+      expect(
+        userService.createUser('name', 'email', '4567', 'password')
+      ).rejects.toThrow('Incorrect OTP');
     });
     it('should throw custom error', async () => {
       jest
