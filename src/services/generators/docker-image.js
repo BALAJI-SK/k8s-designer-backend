@@ -2,6 +2,7 @@ var Docker = require('dockerode');
 var docker = new Docker({ socketPath: '/var/run/docker.sock' });
 const path = require('path');
 const { OUTPUT_PATH } = require('../../constants/app.constants');
+const { MICROSERVICES } = require('../../constants/generator.constants');
 
 const buildImage = async (dockerfilePath, imageName) => {
   const parentDir = path.dirname(dockerfilePath);
@@ -36,14 +37,16 @@ const generateDockerImage = async (projectId, config) => {
   const projectDir = path.join(OUTPUT_PATH, projectId.toString());
 
   let boilerplates = [];
-
-  Object.values(config).forEach((microservice) => {
-    microservice.forEach((instance) => {
-      boilerplates.push({
-        image: instance.image,
-        name: instance.name,
+  
+  MICROSERVICES.forEach((microservice) => {
+    if (config[microservice]) {
+      config[microservice].forEach((instance) => {
+        boilerplates.push({
+          image: instance.image,
+          name: instance.name,
+        });
       });
-    });
+    }
   });
 
   await Promise.all(

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const yaml = require('js-yaml');
 const { spawn } = require('child_process');
 
 const k8sManifestGenerator = async (dockerComposePath, k8sManifestPath) => {
@@ -20,8 +21,19 @@ const k8sManifestGenerator = async (dockerComposePath, k8sManifestPath) => {
       });
 
 
-      child.on('close', (code) => {
+      child.on('close', async(code) => {
         if (code === 0) {
+          const k8string = await fs.promises.readFile(k8sManifestPath, 'utf8');
+          const k8yamlObject = yaml.loadAll(k8string);
+          k8yamlObject.forEach((k8yamlObjectItem) => {
+            if(k8yamlObjectItem.metadata){
+              delete k8yamlObjectItem.metadata.annotations;
+            }
+            if(k8yamlObjectItem.kind === 'Deployment'){
+              delete k8yamlObjectItem.spec.template.metadata.annotations;
+            }
+          });
+          await fs.promises.writeFile(k8sManifestPath, '---\n' + k8yamlObject.map(doc => yaml.dump(doc)).join('---\n'));
           resolve(code);
         } else {
           reject(code);

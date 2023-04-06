@@ -9,6 +9,7 @@ const loadLocalImage = require('../../src/services/loadLocalImage');
 const pushDockerImage = require('../../src/services/pushDockerImage');
 const { getConfigurations, getBoilerplatesConfig } = require('../../src/utility/generators.utils');
 const fsExtra = require('fs-extra');
+const { MICROSERVICES } = require('../../src/constants/generator.constants');
 
 
 const generateFromConfig = async (services, projectName, isOffline) => {
@@ -17,7 +18,7 @@ const generateFromConfig = async (services, projectName, isOffline) => {
   const folderPath = path.join(OUTPUT_PATH, projectName.toString());
   const configurations = getConfigurations(services, isOffline);
   let generatorResponses = [];
-  Object.keys(configurations).forEach((microservice)=>{
+  MICROSERVICES.forEach((microservice)=>{
     generatorResponses.push(generateBoilerplate(projectName, microservice, configurations));
   });
   
