@@ -23,11 +23,12 @@ const pushDockerImage = async (config) => {
             stream.on('data', (data) => {
               const dataArray = data.toString().split('\n');
               dataArray.forEach((data) => {
-                const parsedData = JSON.parse(data);
-                if (parsedData.error) {
-                  reject(`Failed to push ${username}/${name}: ${parsedData.error}`);
+                if(data){
+                  const parsedData = JSON.parse(data);
+                  if (parsedData.error) {
+                    reject(`Failed to push ${username}/${name}: ${parsedData.error}`);
+                  }
                 }
-                
               });
             });
 
