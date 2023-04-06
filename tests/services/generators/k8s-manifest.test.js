@@ -23,7 +23,11 @@ describe('k8sManifestGenerator', () => {
         pipe: jest.fn(),
       },
       stderr: {
-        on: jest.fn(),
+        on: jest.fn().mockImplementation((event, callback) => {
+          if (event === 'data') {
+            callback('Generating k8s-manifest.yaml file');
+          }
+        }),
       },
     };
 
@@ -42,14 +46,18 @@ describe('k8sManifestGenerator', () => {
         pipe: jest.fn(),
       },
       stderr: {
-        on: jest.fn(),
+        on: jest.fn().mockImplementation((event, callback) => {
+          if (event === 'data') {
+            callback('FATA: Error while generating k8s-manifest.yaml file');
+          }
+        }),
       },
     };
 
     try {
       await k8sManifestGenerator(1);
     } catch (e) {
-      expect(e).toBe(1);
+      expect(e).toBe('FATA: Error while generating k8s-manifest.yaml file');
     }
   });
 

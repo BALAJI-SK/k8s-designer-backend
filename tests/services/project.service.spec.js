@@ -77,8 +77,14 @@ const mockreq = {body:{'services':[
   }
 ]}};
 describe('microservices service testing', () => {
+  const OLD_ENV = process.env;
   beforeEach(() => {
-    jest.resetModules();
+    jest.resetModules(); // Most important - it clears the cache
+    process.env = { ...OLD_ENV }; // Make a copy
+  });
+
+  afterAll(() => {
+    process.env = OLD_ENV; // Restore old environment
   });
   it('should populate microservice table ', async () => {
     jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
@@ -99,8 +105,33 @@ describe('microservices service testing', () => {
     const result = await services.generateProject(mockreq.body);
     expect(result).toEqual(path.join(OUTPUT_PATH, `${projectId}.zip`));
   });
-  it('should call the generators with correct parameters', async () => {
+  it('should call the generators with correct parameters when offline enabled is false', async () => {
     process.env.OFFLINE_ENABLED = 'false';
+    jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
+      'id':projectId,
+      'userId':4
+    });
+    jest.spyOn(repositoryServiceObj,'FrontEnd').mockResolvedValueOnce({
+      'id':3,
+    });
+    jest.spyOn(repositoryServiceObj,'BackEnd').mockResolvedValueOnce({
+      'id':4,
+    });
+    await services.generateProject(mockreq.body);
+    const folderPath = path.join(OUTPUT_PATH, projectId.toString());
+    const zipPath = path.join(OUTPUT_PATH, `${projectId}.zip`);
+    const projectDir = path.join(OUTPUT_PATH, projectId.toString());
+    const dockerComposePath = path.join(projectDir, DOCKER_COMPOSE_FILE_NAME);
+    const k8sManifestPath = path.join(projectDir, K8S_MANIFEST_FILE_NAME);
+    expect(generateBoilerplate).toHaveBeenCalledWith(projectId, 'FrontEnd', sampleConfigurations);
+    expect(dockerComposeGenerator).toHaveBeenCalledWith(projectId, sampleConfigurations);
+    expect(generateDockerImage).toHaveBeenCalledWith(projectId, sampleConfigurations);
+    expect(pushDockerImage).toHaveBeenCalledWith(sampleConfigurations);
+    expect(k8sManifestGenerator).toHaveBeenCalledWith(dockerComposePath, k8sManifestPath);
+    expect(zipFolder).toHaveBeenCalledWith(folderPath, zipPath);
+  });
+  it('should call the generators with correct parameters when online enabled is true', async () => {
+    process.env.OFFLINE_ENABLED = 'true';
     jest.spyOn(projectRepository,'create').mockResolvedValueOnce({
       'id':projectId,
       'userId':4
@@ -173,6 +204,16 @@ describe('getLatestProject', () => {
     expect(envVariables.getConnectedServices).toHaveBeenCalledWith(2);
     expect(envVariables.getVariables).toHaveBeenCalledWith(2);
     expect(imageService.getImageRepo).toHaveBeenCalledWith(2);
+  });
+  it('should return empty array when latest project is empty', async () => {
+    // Set up mock functions and data
+    jest.spyOn(projectRepository,'getLatestProject').mockResolvedValueOnce([]);
+    
+    // Call the function with a mock user ID
+    const result = await services.getLatestProject(1);
+
+    // Assert that the result is correct
+    expect(result).toEqual([]);
   });
   it('should return the correct data for a BackEnd service', async () => {
     jest.spyOn(projectRepository,'getLatestProject').mockResolvedValueOnce([{
