@@ -25,4 +25,4 @@ const getDetails = async () => {
 
 const healthCheck = () => 'OK';
 
-module.exports = { getDetails, healthCheck };
+module.exports = { getDetails, healthCheck  };

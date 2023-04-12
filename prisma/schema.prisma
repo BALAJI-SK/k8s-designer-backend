@@ -31,7 +31,7 @@ model user {
 
 model project {
   id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user                 user                   @relation(fields: [userId], references: [id])
+  user                 user                   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId               String                 @map("user_id") @db.Uuid
   timestamp            DateTime               @map("timestamp") @default(now())
   projectServiceConfig projectServiceConfig[]
@@ -41,7 +41,7 @@ model project {
 
 model projectServiceConfig {
   id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  project         project?          @relation(fields: [projectId], references: [id])
+  project         project?          @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   projectId       String            @map("project_id") @db.Uuid
   serviceType     String            @map("service_type")
   frontendService frontendService[]
@@ -58,7 +58,7 @@ model frontendService {
   port                 String                @map("port")
   numberOfReplicas     Int                   @map("number_of_replicas")
   name                 String                @map("name")
-  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId            String                @map("service_id") @db.Uuid @default(dbgenerated("gen_random_uuid()"))
 
   @@map("frontend_services")
@@ -69,7 +69,7 @@ model backendService {
   port                 String                @map("port")
   numberOfReplicas     Int                   @map("number_of_replicas")
   name                 String                @map("name")
-  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId            String                @map("service_id") @db.Uuid  @default(dbgenerated("gen_random_uuid()"))
 
   @@map("backend_services")
@@ -82,7 +82,7 @@ model databaseService {
   port                 String                @map("port")
   numberOfReplicas     Int                   @map("number_of_replicas")
   schemaName           String                @map("schema_name") @default("public")
-  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId            String                @map("service_id") @db.Uuid  @default(dbgenerated("gen_random_uuid()"))
 
   @@map("database_services")
@@ -91,7 +91,7 @@ model envVariables {
   id                   String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   field                String                @map("field")
   value                String                @map("value")
-  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId            String                @map("service_id") @db.Uuid
 
   @@map("env_variables")
@@ -103,7 +103,7 @@ model imageRepository{
   email               String                @map("email") 
   imageRepositoryUrl  String                @map("image_repository_url")
   imageRepositoryToken String               @map("image_repository_token")
-  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id])
+  projectServiceConfig projectServiceConfig? @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   serviceId            String                @map("service_id") @db.Uuid
 
   @@map("image_repositories")

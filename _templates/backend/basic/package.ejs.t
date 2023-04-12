@@ -36,6 +36,7 @@ force: true
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "swagger-autogen": "^2.23.1",
     "nodemon": "^2.0.21",
     <%_ if(databases.length > 0) { _%>
     "sequelize-cli": "^6.6.0",
@@ -44,6 +45,9 @@ force: true
   },
   "dependencies": {
     "express": "^4.18.2",
+    "swagger-jsdoc": "^6.2.8",
+    "joi-to-swagger": "^6.2.0",
+    "swagger-ui-express": "^4.6.2",
     <%_ if(databases.length > 0) { _%>
     "pg": "^8.9.0",
     "pg-hstore": "^2.3.4",
